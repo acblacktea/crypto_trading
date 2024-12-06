@@ -10,21 +10,21 @@ int main() {
 
 
 
-    client.subscrible({"btcusdt@aggTrade"}, [](rapidjson::Document &d) {
+    client.subscrible({"btcusdt@trade"}, [](rapidjson::Document &d) {
         //std::cout << d["data"]["bids"][0][0].GetString() << std::endl;
     });
 
     client.listen();
 
     /*
-    client.subscrible({"btcusdt@bookTicker"}, [](Rapidjson::Document &d) {
+    client.subscrible({"btcusdt@bookTicker"}, [](rapidjson::Document &d) {
         //std::cout << d["data"]["u"].GetInt64() << std::endl;
     });
     */
 
 
     /*
-    client.subscrible({"btcusdt@aggTrade"}, [](Rapidjson::Document &d) {
+    client.subscrible({"btcusdt@aggTrade"}, [](rapidjson::Document &d) {
         binance::aggregateTradeEventTest event;
         event.Deserialize(d["data"]);
         std::cout << event.tradeTime << std::endl;
