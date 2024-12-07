@@ -1,6 +1,6 @@
 #pragma once
 #include <util/HTTPClient.h>
-#include <exchanges/binance/model/OrderBook.h>
+#include <exchanges/binance/model/PartialBookDepth.h>
 //-------------------------------------------------------------------------------------
 namespace Binance::Http {
     class Client : public util::Http::Client {
@@ -14,11 +14,13 @@ namespace Binance::Http {
             };
         }
 
+        /*
         OrderBook getOrderBook(const std::string& symbol) {
              auto path = "/api/v3/depth?symbol=" + symbol;
              auto orderBook = get<OrderBook>(path, "{}");
              return orderBook;
         }
+        */
 
     };
 }

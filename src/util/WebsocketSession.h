@@ -98,7 +98,7 @@ namespace util::Websocket  {
             }
 
             auto dataStr = boost::beast::buffers_to_string(buffer_.data());
-            std::cout << dataStr << std::endl;
+            std::cout << dataStr << std::endl << std:: endl;
             rapidjson::Document document;
             document.Parse(dataStr.c_str());
             func(document);
@@ -111,7 +111,7 @@ namespace util::Websocket  {
         websocket::stream<beast::ssl_stream<beast::tcp_stream>> ws;
         beast::flat_buffer buffer_;
         std::string host; // = "stream.binance.com";
-        std::string port = "9443";
+        std::string port = "443";
         std::string path;
         std::string text_;
         callBackFunc func;

@@ -3,7 +3,7 @@
 #include <util/jsonBase.h>
 
 namespace Binance {
-    class TradeEvent : public JsonObject {
+    class AggregateTrade : public JsonObject {
     public:
         bool deserialize(const rapidjson::Value &obj) override;
 
@@ -11,9 +11,11 @@ namespace Binance {
         std::string eventType;
         long long eventTime = 0;
         std::string symbol;
-        long long tradeID = 0;
-        double price = 0.0;
-        double quantity;
+        long long aggTradeID = 0;
+        std::string price;
+        std::string quantity;
+        long long firstTradeID = 0;
+        long long lastTradeID = 0;
         long long tradeTime = 0;
         bool isMarketMaker;
     private:
@@ -25,11 +27,15 @@ namespace Binance {
 
         void setSymbol(std::string &&_symbol) { symbol = std::move(_symbol); }
 
-        void setTradeID(long long _tradeID) { tradeID = _tradeID; }
+        void setAggTradeID(long long _tradeID) { aggTradeID = _tradeID; }
 
-        void setPrice(std::string &&_price) { price = stod(_price); }
+        void setPrice(std::string &&_price) { price = std::move(_price); }
 
-        void setQuantity(std::string &&_quantity) { quantity = stod(_quantity); }
+        void setQuantity(std::string &&_quantity) { quantity = std::move(_quantity); }
+
+        void setFirstTradeID(long long _firstTradeID) { firstTradeID = _firstTradeID; }
+
+        void setLastTradeID(long long _lastTradeID) { lastTradeID = _lastTradeID; }
 
         void setTradeTime(long long _time) { tradeTime = _time; }
 
@@ -37,14 +43,16 @@ namespace Binance {
     };
 
 
-    bool TradeEvent::deserialize(const rapidjson::Value &obj) {
+    bool AggregateTrade::deserialize(const rapidjson::Value &obj) {
         setStream(obj["stream"].GetString());
         setEventType(obj["data"]["e"].GetString());
         setEventTime(obj["data"]["E"].GetInt64());
         setSymbol(obj["data"]["s"].GetString());
-        setTradeID(obj["data"]["t"].GetInt64());
+        setAggTradeID(obj["data"]["a"].GetInt64());
         setPrice(obj["data"]["p"].GetString());
         setQuantity(obj["data"]["q"].GetString());
+        setFirstTradeID(obj["data"]["f"].GetInt64());
+        setLastTradeID(obj["data"]["l"].GetInt64());
         setTradeTime(obj["data"]["T"].GetInt64());
         setIsMarketMaker(obj["data"]["m"].GetBool());
         return true;

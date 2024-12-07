@@ -1,5 +1,5 @@
 #pragma once
-class TradingEngine {
+class core {
 public:
     auto updateTickData();
     auto updateCandleStick();
