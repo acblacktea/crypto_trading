@@ -1,9 +1,10 @@
 #pragma once
 #include <rapidjson/document.h>
 #include <util/jsonBase.h>
+#include <exchanges/binance/model/Event.hpp>
 
 namespace Binance {
-    class KLine: public JsonObject {
+    class KLine: public JsonObject, Event {
     public:
         bool deserialize(const rapidjson::Value &obj) override;
         long long startTime;
@@ -63,18 +64,14 @@ namespace Binance {
     }
 
 
-    class KLineEvent : public JsonObject {
+    class KLineEvent : public JsonObject, public Event {
     public:
         bool deserialize(const rapidjson::Value &obj) override;
-
-        std::string stream;
         std::string eventType;
         long long eventTime = 0;
         std::string symbol;
         KLine kLine;
     private:
-        void setStream(std::string &&_stream) { stream = std::move(_stream); }
-
         void setEventType(std::string &&_eventType) { eventType = std::move(_eventType); }
 
         void setEventTime(long long _eventTime) { eventTime = _eventTime; }

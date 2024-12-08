@@ -1,4 +1,4 @@
-#include <exchanges/binance/model/BookDiff.h>
+#include <exchanges/binance/model/BookDiff.hpp>
 #include <rapidjson/document.h>
 #include <gtest/gtest.h>
 

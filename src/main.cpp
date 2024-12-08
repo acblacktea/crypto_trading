@@ -1,6 +1,6 @@
 #include <iostream>
 #include <exchanges/binance/websocket/Client.h>
-#include <exchanges/binance/model/AggregateTrade.h>
+#include <exchanges/binance/model/AggregateTrade.hpp>
 #include <exchanges/binance/http/Client.h>
 #include <rapidjson/document.h>
 

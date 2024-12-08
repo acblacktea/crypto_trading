@@ -3,28 +3,18 @@
 #include <util/jsonBase.h>
 #include <concepts>
 #include <vector>
+#include <exchanges/binance/model/Event.hpp>
 
 namespace Binance {
-    class BookDiffEvent: public JsonObject {
+    class PartialBookDepthEvent: public JsonObject, public Event {
     public:
         bool deserialize(const rapidjson::Value &obj) override;
 
-        std::string stream;
-        std::string eventType;
-        long long eventTime;
-        std::string symbol;
-        long long firstUpdateID;
-        long long lastUpdateID;
+        long long lastUpdateId;
         std::vector<std::vector<std::string>> bids;
         std::vector<std::vector<std::string>> asks;
     private:
-
-        void setStream(std::string &&_stream) { stream = std::move(_stream); }
-        void setEventType(std::string &&_eventType) { eventType = std::move(_eventType); }
-        void setEventTime(long long _eventTime) { eventTime = _eventTime; }
-        void setSymbol(std::string &&_symbol) { symbol = std::move(_symbol); }
-        void setFirstUpdateID(long long _firstUpdateID) { firstUpdateID = _firstUpdateID; }
-        void setLastUpdateID(long long _lastUpdateID) { lastUpdateID = _lastUpdateID; }
+        void setLastUpdateId(long long _lastUpdateId) { lastUpdateId = _lastUpdateId; }
 
         void setBids(const rapidjson::Value::ConstArray& array) {
             for (auto &element : array) {
@@ -53,15 +43,11 @@ namespace Binance {
     };
 
 
-    bool BookDiffEvent::deserialize(const rapidjson::Value &obj) {
+    bool PartialBookDepthEvent::deserialize(const rapidjson::Value &obj) {
         setStream(obj["stream"].GetString());
-        setEventType(obj["data"]["e"].GetString());
-        setEventTime(obj["data"]["E"].GetInt64());
-        setSymbol(obj["data"]["s"].GetString());
-        setFirstUpdateID(obj["data"]["U"].GetInt64());
-        setLastUpdateID(obj["data"]["u"].GetInt64());
-        setBids(obj["data"]["b"].GetArray());
-        setAsks(obj["data"]["a"].GetArray());
+        setLastUpdateId(obj["data"]["lastUpdateId"].GetInt64());
+        setBids(obj["data"]["bids"].GetArray());
+        setAsks(obj["data"]["asks"].GetArray());
 
         return true;
     }

@@ -1,4 +1,4 @@
-#include <exchanges/binance/model/BookTicker.h>
+#include <exchanges/binance/model/BookTicker.hpp>
 #include <rapidjson/document.h>
 #include <gtest/gtest.h>
 

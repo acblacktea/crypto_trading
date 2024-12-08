@@ -1,6 +1,6 @@
 #pragma once
 #include <util/HTTPClient.h>
-#include <exchanges/binance/model/PartialBookDepth.h>
+#include <exchanges/binance/model/PartialBookDepth.hpp>
 //-------------------------------------------------------------------------------------
 namespace Binance::Http {
     class Client : public util::Http::Client {

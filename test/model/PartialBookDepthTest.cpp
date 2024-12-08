@@ -1,4 +1,4 @@
-#include <exchanges/binance/model/PartialBookDepth.h>
+#include <exchanges/binance/model/PartialBookDepth.hpp>
 #include <rapidjson/document.h>
 #include <gtest/gtest.h>
 

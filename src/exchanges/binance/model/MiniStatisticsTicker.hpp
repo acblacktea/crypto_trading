@@ -2,6 +2,7 @@
 #include <rapidjson/document.h>
 #include <util/jsonBase.h>
 #include <vector>
+#include <exchanges/binance/model/Event.hpp>
 
 namespace Binance {
     class MiniStatisticsTicker : public JsonObject {
@@ -49,15 +50,11 @@ namespace Binance {
         return true;
     }
 
-    class MiniStatisticsTickerEvent : public JsonObject {
+    class MiniStatisticsTickerEvent : public JsonObject, public Event {
     public:
         bool deserialize(const rapidjson::Value &obj) override;
-
-        std::string stream;
         MiniStatisticsTicker miniTicker;
     private:
-        void setStream(std::string &&_stream) { stream = std::move(_stream); }
-
         void setMiniStatisticsTicker(const rapidjson::Value &obj) { miniTicker.deserialize(obj);}
     };
 
@@ -68,14 +65,11 @@ namespace Binance {
     }
 
 
-    class AllMiniStatisticsTickersEvent : public JsonObject {
+    class AllMiniStatisticsTickersEvent : public JsonObject, public Event {
     public:
         bool deserialize(const rapidjson::Value &obj) override;
-        std::string stream;
         std::vector<MiniStatisticsTicker> tickers;
     private:
-        void setStream(std::string &&_stream) { stream = std::move(_stream); }
-
         void setMiniStatisticsTickers(const rapidjson::Value::ConstArray& array) {
             for (auto &item: array) {
                 MiniStatisticsTicker ticker;

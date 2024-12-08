@@ -1,4 +1,4 @@
-#include <exchanges/binance/model/StatisticsTicker.h>
+#include <exchanges/binance/model/StatisticsTicker.hpp>
 #include <rapidjson/document.h>
 #include <gtest/gtest.h>
 

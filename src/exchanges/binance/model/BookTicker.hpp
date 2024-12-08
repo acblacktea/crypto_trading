@@ -1,13 +1,12 @@
 #pragma once
 #include <rapidjson/document.h>
 #include <util/jsonBase.h>
+#include <exchanges/binance/model/Event.hpp>
 
 namespace Binance {
-    class BookTickerEvent : public JsonObject {
+    class BookTickerEvent : public JsonObject, public Event {
     public:
         bool deserialize(const rapidjson::Value &obj) override;
-
-        std::string stream;
         long long updateID;
         std::string symbol;
         std::string bestBidPrice;
@@ -15,8 +14,6 @@ namespace Binance {
         std::string bestAskPrice;
         std::string bestAskQuantity;
     private:
-        void setStream(std::string &&_stream) { stream = std::move(_stream); }
-
         void setUpdateID(long long _updateID) { updateID = _updateID; }
 
         void setSymbol(std::string &&_symbol) { symbol = std::move(_symbol); }
