@@ -1,4 +1,4 @@
-#include <exchanges/binance/model/AveragePrice.hpp>
+#include <exchanges/binance/model/AveragePrice.h>
 #include <rapidjson/document.h>
 #include <gtest/gtest.h>
 

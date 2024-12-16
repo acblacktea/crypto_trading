@@ -1,4 +1,4 @@
-#include <exchanges/binance/model/AggregateTrade.hpp>
+#include <exchanges/binance/model/AggregateTrade.h>
 #include <rapidjson/document.h>
 #include <gtest/gtest.h>
 

@@ -63,7 +63,6 @@ namespace Binance {
         return true;
     }
 
-
     class KLineEvent : public JsonObject, public Event {
     public:
         bool deserialize(const rapidjson::Value &obj) override;
@@ -85,7 +84,6 @@ namespace Binance {
 
 
     bool KLineEvent::deserialize(const rapidjson::Value &obj) {
-        setStream(obj["stream"].GetString());
         setEventType(obj["data"]["e"].GetString());
         setEventTime(obj["data"]["E"].GetInt64());
         setSymbol(obj["data"]["s"].GetString());

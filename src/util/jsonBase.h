@@ -10,7 +10,9 @@ public:
 
     }
     virtual bool deserialize(const rapidjson::Value& obj) = 0;
-    virtual std::string serialize() = 0;
+    virtual std::string serialize() {
+        return "";
+    };
 };
 
 
