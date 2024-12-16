@@ -2,6 +2,11 @@
 #include <util/HTTPClient.h>
 #include <exchanges/binance/model/PartialBookDepth.hpp>
 //-------------------------------------------------------------------------------------
+//is.set_option(urdl::http::request_content_type("application/json"));
+//is.set_option(urdl::http::request_content("{\"username\":\"user@name.co\", \"password\":\"test\"}"));
+
+
+
 namespace Binance::Http {
     class Client : public util::Http::Client {
     public:
@@ -14,13 +19,13 @@ namespace Binance::Http {
             };
         }
 
-        /*
-        OrderBook getOrderBook(const std::string& symbol) {
-             auto path = "/api/v3/depth?symbol=" + symbol;
-             auto orderBook = get<OrderBook>(path, "{}");
-             return orderBook;
+        void newOrder() {
         }
-        */
 
+        void cancelOrder() {}
+
+        void testOrder() {
+
+        }
     };
 }

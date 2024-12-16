@@ -963,7 +963,7 @@ public:
     template <typename T>
     RAPIDJSON_DISABLEIF_RETURN((internal::IsPointer<T>), (GenericValue&))
     operator=(T value) {
-        GenericValue v(value);
+        GenericValue v(static_cast<Array>(value));
         return *this = v;
     }
 

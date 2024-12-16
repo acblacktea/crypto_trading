@@ -6,8 +6,11 @@
 
 class JsonObject {
 public:
+    JsonObject() {
+
+    }
     virtual bool deserialize(const rapidjson::Value& obj) = 0;
-    virtual bool serialize() {}
+    virtual std::string serialize() = 0;
 };
 
 
