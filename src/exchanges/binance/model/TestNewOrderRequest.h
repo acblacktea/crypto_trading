@@ -26,7 +26,7 @@ namespace Binance {
         doc.SetObject();
         doc.AddMember("symbol", rapidjson::StringRef(symbol.c_str()), doc.GetAllocator());
         doc.AddMember("side", rapidjson::StringRef(side.c_str()), doc.GetAllocator());
-        doc.AddMember("type", rapidjson::StringRef(side.c_str()), doc.GetAllocator());
+        doc.AddMember("type", rapidjson::StringRef(type.c_str()), doc.GetAllocator());
 
         if (timeInForce.has_value()) {
             doc.AddMember("timeInForce", rapidjson::StringRef(timeInForce.value().c_str()), doc.GetAllocator());
@@ -60,5 +60,9 @@ namespace Binance {
 
 
         return buffer.GetString();
+    }
+
+    bool TestNewOrderRequest::deserialize(const rapidjson::Value &obj) {
+        return false;
     }
 }

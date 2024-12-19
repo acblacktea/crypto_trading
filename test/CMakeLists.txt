@@ -6,7 +6,8 @@ set(SOURCES ${TEST_SOURCES})
 
 enable_testing()
 add_executable(${BINARY} ${TEST_SOURCES}
-        model/BookTickerEventTest.cpp)
+        model/BookTickerEventTest.cpp
+        model/TestNewOrderRequest.cpp)
 
 add_test(NAME ${BINARY} COMMAND ${BINARY})
 

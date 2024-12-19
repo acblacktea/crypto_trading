@@ -6,7 +6,7 @@
 
 
 namespace Binance {
-    class QueryOrderRequest : public JsonObject {
+    class QueryOrderResponse : public JsonObject {
     public:
         bool deserialize(const rapidjson::Value &obj) override;
 
@@ -53,7 +53,7 @@ namespace Binance {
         void setUpdateTime(long long _updateTime) { updateTime = _updateTime; }
     };
 
-    bool QueryOrderRequest::deserialize(const rapidjson::Value &obj) {
+    bool QueryOrderResponse::deserialize(const rapidjson::Value &obj) {
         setSymbol(obj["symbol"].GetString());
         setOrderID(obj["orderID"].GetInt64());
 

@@ -61,6 +61,7 @@ namespace util::Http {
                 beast::error_code ec,
                 tcp::resolver::results_type results) {
             if (ec) {
+                errorCode = ec;
                 return fail(ec, "resolve");
             }
 
@@ -85,6 +86,7 @@ namespace util::Http {
 
         void onConnect(beast::error_code ec, tcp::resolver::results_type::endpoint_type) {
             if (ec) {
+                errorCode = ec;
                 return fail(ec, "connect");
             }
 
@@ -95,6 +97,7 @@ namespace util::Http {
 
         void onHandshake(beast::error_code ec) {
             if (ec)
+                errorCode = ec;
                 return fail(ec, "handshake");
 
             // Set a timeout on the operation
@@ -107,6 +110,7 @@ namespace util::Http {
             boost::ignore_unused(bytes_transferred);
 
             if (ec) {
+                errorCode = ec;
                 return fail(ec, "write");
             }
 
@@ -118,6 +122,7 @@ namespace util::Http {
             boost::ignore_unused(bytes_transferred);
 
             if (ec) {
+                errorCode = ec;
                 return fail(ec, "read");
             }
 
@@ -126,6 +131,7 @@ namespace util::Http {
         }
 
         http::response<http::string_body> res;
+        beast::error_code errorCode;
     private:
         tcp::resolver resolver;
         beast::ssl_stream<beast::tcp_stream> stream;
