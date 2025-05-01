@@ -13,7 +13,7 @@ template <typename T, size_t N>
 class MMapQueue
 {
 public:
-    MMapQueue(std::string && path)
+    explict MMapQueue(std::string && path)
         : fileTotalSize(N * sizeof(T) + 2 * sizeof(std::atomic<int>))
     {
         auto fileExisted = pathExists(path);

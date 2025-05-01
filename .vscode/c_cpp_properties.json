@@ -4,7 +4,8 @@
             "name": "linux",
             "includePath": [
                 "${workspaceFolder}/src",
-                "${workspaceFolder}/libs/googletest/googletest/include"
+                "${workspaceFolder}/libs/googletest/googletest/include",
+                "${workspaceFolder}/libs/rapidjson/include"
             ],
             "defines": [],
             "cStandard": "c17",

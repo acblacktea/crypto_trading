@@ -5,9 +5,7 @@ file(GLOB_RECURSE TEST_SOURCES LIST_DIRECTORIES false *.h *.cpp)
 set(SOURCES ${TEST_SOURCES})
 
 enable_testing()
-add_executable(${BINARY} ${TEST_SOURCES}
-        model/BookTickerEventTest.cpp
-        model/TestNewOrderRequest.cpp)
+add_executable(${BINARY} ${TEST_SOURCES})
 
 add_test(NAME ${BINARY} COMMAND ${BINARY})
 
@@ -22,5 +20,6 @@ else ()
 endif()
 
 target_link_libraries(${BINARY} PUBLIC ${CMAKE_PROJECT_NAME}_lib gtest gtest_main ${Boost_LIBRARIES})
+
 include(GoogleTest)
 gtest_discover_tests(${BINARY})

@@ -24,12 +24,12 @@ public:
 };
 
 
-bool NewOrderRequest::deserialize(const rapidjson::Value & obj)
+inline bool NewOrderRequest::deserialize(const rapidjson::Value & obj)
 {
     return false;
 }
 
-std::string NewOrderRequest::serialize()
+inline std::string NewOrderRequest::serialize()
 {
     rapidjson::Document doc;
     doc.SetObject();

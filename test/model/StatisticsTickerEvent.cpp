@@ -1,9 +1,10 @@
 #include <exchanges/binance/model/StatisticsTicker.hpp>
-#include <rapidjson/document.h>
 #include <gtest/gtest.h>
+#include <rapidjson/document.h>
 
-TEST(tickerEventEvent, testDeserialize) {
-    const char* json = R"({
+TEST(tickerEventEvent, testDeserialize)
+{
+    const char * json = R"({
   "stream": "btcusdt@ticker",
   "data": {
     "e": "24hrTicker",
@@ -63,8 +64,9 @@ TEST(tickerEventEvent, testDeserialize) {
     EXPECT_EQ(event.ticker.totalTradeNumbers, 5419820);
 }
 
-TEST(allTickersEventEvent, testDeserialize) {
-    const char* json = R"({
+TEST(allTickersEventEvent, testDeserialize)
+{
+    const char * json = R"({
   "stream": "!ticker@arr",
   "data": [
     {

@@ -21,12 +21,12 @@ public:
     std::optional<long long> recvWindow;
 };
 
-bool CancelOrderRequest::deserialize(const rapidjson::Value & obj)
+inline bool CancelOrderRequest::deserialize(const rapidjson::Value & obj)
 {
     return false;
 }
 
-std::string CancelOrderRequest::serialize()
+inline std::string CancelOrderRequest::serialize()
 {
     /*
     rapidjson::Document doc;

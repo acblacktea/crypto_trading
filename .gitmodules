@@ -1,3 +1,9 @@
 [submodule "libs/googletest"]
 	path = libs/googletest
 	url = https://github.com/google/googletest
+[submodule "libs/rapidjson"]
+	path = libs/rapidjson
+	url = git@github.com:Tencent/rapidjson.git
+[submodule "libs/boost"]
+	path = libs/boost
+	url = git@github.com:boostorg/boost.git

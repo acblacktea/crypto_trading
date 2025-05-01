@@ -21,7 +21,7 @@ using tcp = boost::asio::ip::tcp; // from <boost/asio/ip/tcp.hpp>
 namespace util::Http
 {
 // Report a failure
-void fail(beast::error_code ec, char const * what)
+inline void fail(beast::error_code ec, char const * what)
 {
     std::cerr << what << ": " << ec.message() << "\n";
 }

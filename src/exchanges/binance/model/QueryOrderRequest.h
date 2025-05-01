@@ -20,41 +20,43 @@ public:
     std::optional<long long> recvWindow;
 };
 
-bool QueryOrderRequest::deserialize(const rapidjson::Value & obj)
+inline bool QueryOrderRequest::deserialize(const rapidjson::Value & obj)
 {
     return false;
 }
 
-std::string QueryOrderRequest::serialize()
+inline std::string QueryOrderRequest::serialize()
 {
     /*
-        rapidjson::Document doc;
-        doc.SetObject();
-        doc.AddMember("symbol", rapidjson::StringRef(symbol.c_str()), doc.GetAllocator());
-        doc.AddMember("timestamp", timestamp, doc.GetAllocator());
+    rapidjson::Document doc;
+    doc.SetObject();
+    doc.AddMember("symbol", rapidjson::StringRef(symbol.c_str()), doc.GetAllocator());
+    doc.AddMember("timestamp", timestamp, doc.GetAllocator());
 
-        if (orderID.has_value()) {
-            doc.AddMember("orderID", orderID.value(), doc.GetAllocator());
-        }
+    if (orderID.has_value())
+    {
+        doc.AddMember("orderID", orderID.value(), doc.GetAllocator());
+    }
 
-        if (origClientOrderId.has_value()) {
-            doc.AddMember("origClientOrderId", rapidjson::StringRef(origClientOrderId.value().c_str()), doc.GetAllocator());
-        }
+    if (origClientOrderId.has_value())
+    {
+        doc.AddMember("origClientOrderId", rapidjson::StringRef(origClientOrderId.value().c_str()), doc.GetAllocator());
+    }
 
-        if (recvWindow.has_value()) {
-            doc.AddMember("recvWindow", recvWindow.value(), doc.GetAllocator());
-        }
-
-
-        // 3. Stringify the DOM
-        rapidjson::StringBuffer buffer;
-        rapidjson::Writer<rapidjson::StringBuffer> writer(buffer);
-        doc.Accept(writer);
+    if (recvWindow.has_value())
+    {
+        doc.AddMember("recvWindow", recvWindow.value(), doc.GetAllocator());
+    }
 
 
-        return buffer.GetString();
-        */
+    // 3. Stringify the DOM
+    rapidjson::StringBuffer buffer;
+    rapidjson::Writer<rapidjson::StringBuffer> writer(buffer);
+    doc.Accept(writer);
 
+
+    return buffer.GetString();
+    */
     return "";
 }
 }

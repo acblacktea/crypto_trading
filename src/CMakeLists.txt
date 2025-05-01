@@ -4,7 +4,6 @@ file(GLOB_RECURSE SOURCES LIST_DIRECTORIES true *.h *.cpp)
 
 set(SOURCES ${SOURCES})
 
-# import boost
 set(Boost_USE_STATIC_LIBS ON)
 find_package(Boost REQUIRED system random thread)
 if (NOT Boost_FOUND)
