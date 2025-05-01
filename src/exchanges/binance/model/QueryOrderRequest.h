@@ -1,28 +1,33 @@
 #pragma once
+#include <optional>
+#include <exchanges/binance/model/Event.hpp>
 #include <rapidjson/document.h>
 #include <util/jsonBase.h>
-#include <exchanges/binance/model/Event.hpp>
-#include <optional>
 
 
-namespace Binance {
-    class QueryOrderRequest : public JsonObject {
-    public:
-        bool deserialize(const rapidjson::Value &obj) override;
-        std::string serialize() override;
+namespace Binance
+{
+class QueryOrderRequest : public JsonObject
+{
+public:
+    bool deserialize(const rapidjson::Value & obj) override;
+    std::string serialize() override;
 
-        std::string symbol;
-        long long timestamp;
-        std::optional<long long> orderID;
-        std::optional<std::string> origClientOrderId;
-        std::optional<long long> recvWindow;
-    };
+    std::string symbol;
+    long long timestamp;
+    std::optional<long long> orderID;
+    std::optional<std::string> origClientOrderId;
+    std::optional<long long> recvWindow;
+};
 
-    bool QueryOrderRequest::deserialize(const rapidjson::Value &obj) {
-        return false;
-    }
+bool QueryOrderRequest::deserialize(const rapidjson::Value & obj)
+{
+    return false;
+}
 
-    std::string QueryOrderRequest::serialize() {
+std::string QueryOrderRequest::serialize()
+{
+    /*
         rapidjson::Document doc;
         doc.SetObject();
         doc.AddMember("symbol", rapidjson::StringRef(symbol.c_str()), doc.GetAllocator());
@@ -48,5 +53,8 @@ namespace Binance {
 
 
         return buffer.GetString();
-    }
+        */
+
+    return "";
+}
 }

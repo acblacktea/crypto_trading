@@ -1,18 +1,20 @@
 #include <iostream>
-#include <exchanges/binance/websocket/Client.h>
-#include <exchanges/binance/model/AggregateTrade.h>
 #include <exchanges/binance/http/Client.h>
+#include <exchanges/binance/model/AggregateTrade.h>
+#include <exchanges/binance/websocket/Client.h>
 #include <rapidjson/document.h>
 
-int main() {
+int main()
+{
     Binance::Websocket::Client client;
-    Binance::Http::Client httpClient;
+    Binance::Http::Client httpClient("");
 
-
-
-    client.subscrible({"btcusdt@depth"}, [](rapidjson::Document &d) {
-        //std::cout << d["data"]["bids"][0][0].GetString() << std::endl;
-    });
+    client.subscrible(
+        {"btcusdt@depth"},
+        [](rapidjson::Document & d)
+        {
+            //std::cout << d["data"]["bids"][0][0].GetString() << std::endl;
+        });
 
     client.listen();
 

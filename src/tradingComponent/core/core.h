@@ -1,5 +1,6 @@
 #pragma once
-class core {
+class core
+{
 public:
     auto updateTickData();
     auto updateCandleStick();
