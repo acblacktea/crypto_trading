@@ -11,7 +11,7 @@ int main()
 
     client.subscrible(
         {"btcusdt@depth"},
-        [](rapidjson::Document & d)
+        [](std::string & s)
         {
             //std::cout << d["data"]["bids"][0][0].GetString() << std::endl;
         });

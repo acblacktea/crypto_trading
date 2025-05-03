@@ -24,6 +24,7 @@ namespace net = boost::asio; // from <boost/asio.hpp>
 namespace ssl = net::ssl;
 using tcp = net::ip::tcp; // from <boost/asio/ip/tcp.hpp>
 using callBackFunc = std::function<void(rapidjson::Document &)>;
+using rawDataCallBackFunc = std::function<void(std::string &)>;
 
 void fail(beast::error_code ec, char const * what)
 {
@@ -40,10 +41,10 @@ public:
     {
     }
 
-    void run(std::string p, callBackFunc f)
+    void run(std::string p, rawDataCallBackFunc f)
     {
         this->path = std::move(p);
-        this->func = std::move(f);
+        this->rawDataFunc = f;
         resolver_.async_resolve(host, port, beast::bind_front_handler(&Session::onResolve, shared_from_this()));
     }
 
@@ -109,11 +110,17 @@ public:
             return fail(ec, "read");
         }
 
+
         auto dataStr = boost::beast::buffers_to_string(buffer_.data());
-        std::cout << dataStr << std::endl << std::endl;
+        std::cout << dataStr << std::endl;
+        rawDataFunc(dataStr);
+
+        /*
         rapidjson::Document document;
         document.Parse(dataStr.c_str());
         func(document);
+        */
+
         buffer_.consume(buffer_.size());
         ws.async_read(buffer_, beast::bind_front_handler(&Session::onRead, shared_from_this()));
     }
@@ -127,5 +134,6 @@ private:
     std::string path;
     std::string text_;
     callBackFunc func;
+    rawDataCallBackFunc rawDataFunc;
 };
 }

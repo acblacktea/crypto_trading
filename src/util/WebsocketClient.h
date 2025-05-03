@@ -12,8 +12,8 @@
 #include <boost/beast/core.hpp>
 #include <boost/beast/ssl.hpp>
 #include <boost/beast/websocket.hpp>
-#include <util/WebsocketSession.h>
 #include <rapidjson/document.h>
+#include <util/WebsocketSession.h>
 
 
 namespace beast = boost::beast; // from <boost/beast.hpp>
@@ -29,7 +29,7 @@ namespace util::Websocket
 class Client
 {
 public:
-    void subscrible(const std::vector<std::string> & events, callBackFunc f)
+    void subscrible(const std::vector<std::string> & events, rawDataCallBackFunc f)
     {
         auto pathWithEvents = path;
         for (int i = 0; i < events.size(); ++i)
