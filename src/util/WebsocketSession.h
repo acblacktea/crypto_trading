@@ -112,7 +112,6 @@ public:
 
 
         auto dataStr = boost::beast::buffers_to_string(buffer_.data());
-        std::cout << dataStr << std::endl;
         rawDataFunc(dataStr);
 
         /*

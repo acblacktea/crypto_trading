@@ -1,68 +1,33 @@
 #include <iostream>
-#include <exchanges/binance/http/Client.h>
-#include <exchanges/binance/model/AggregateTrade.h>
-#include <exchanges/binance/websocket/Client.h>
+#include <unistd.h>
 #include <rapidjson/document.h>
+#include <tradingComponent/core/core.hpp>
+#include <tradingComponent/gateway/gateway.hpp>
 
 int main()
 {
-    Binance::Websocket::Client client;
-    Binance::Http::Client httpClient("");
+    std::string cppMMapQueueName = "event_queue_cpp";
+    std::size_t cppMMapQueueSize = 100000;
 
-    client.subscrible(
-        {"btcusdt@depth"},
-        [](std::string & s)
-        {
-            //std::cout << d["data"]["bids"][0][0].GetString() << std::endl;
-        });
-
-    client.listen();
-
-    /*
-    client.subscrible({"btcusdt@bookTicker"}, [](rapidjson::Document &d) {
-        //std::cout << d["data"]["u"].GetInt64() << std::endl;
-    });
-    */
-
-
-    /*
-    client.subscrible({"btcusdt@aggTrade"}, [](rapidjson::Document &d) {
-        binance::aggregateTradeEventTest event;
-        event.Deserialize(d["data"]);
-        std::cout << event.tradeTime << std::endl;
-        std::cout << event.lastTradeID << std::endl;
-        std::cout << event.firstTradeID << std::endl;
-        std::cout << event.quantity << std::endl;
-        std::cout << event.symbol << std::endl;
-        std::cout << event.eventTime << std::endl;
-        std::cout << event.eventType << std::endl;
-        std::cout << event.price << std::endl;
-        std::cout << event.aggTradeID << std::endl;
-        std::cout << event.isMarketMaker << std::endl;
-
-        //std::cout << d["data"]["u"].GetInt64() << std::endl;
-    });
-
-    client.listen();
-    */
-
-
-    /*
-    for (auto i = 0; i < 1; ++i) {
-        //httpClient.get("asdsad", "");
-        auto orderBook = httpClient.getOrderBook("BNBBTC");
-        std::cout << orderBook.lastUpdateId << std::endl;
-        std::cout << orderBook.asks.size() << std::endl;
-        for (auto& ve: orderBook.asks) {
-            std::cout << ve[0] << " " << ve[1] << std::endl;
-        }
-
-        std::cout << orderBook.bids.size() << std::endl;
-        for (auto& ve: orderBook.bids) {
-            std::cout << ve[0] << " " << ve[1] << std::endl;
-        }
+    // receive ticker data
+    auto process1PID = fork();
+    if (process1PID == 0)
+    {
+        Gateway gateway(cppMMapQueueName, cppMMapQueueSize);
+        gateway.listen();
+        exit(0);
     }
-     */
 
+    // execute strategies
+    auto process2PID = fork();
+    if (process2PID == 0)
+    {
+        Core core(cppMMapQueueName, cppMMapQueueSize);
+        core.execute();
+        exit(0);
+    }
+
+    waitpid(process1PID, nullptr, 0);
+    waitpid(process2PID, nullptr, 0);
     return 0;
 }

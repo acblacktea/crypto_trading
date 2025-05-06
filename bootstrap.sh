@@ -6,4 +6,4 @@ git submodule update --remote --recursive
 
 
 # build
-/usr/bin/cmake --build ./build --config Debug --target all -j 1 --
+/usr/bin/cmake --build ./build --config Debug --target all -j 2 --

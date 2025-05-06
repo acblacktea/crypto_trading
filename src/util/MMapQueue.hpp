@@ -44,9 +44,7 @@ public:
         if (!fileExisted)
         {
             // Initialize header
-            head = new std::atomic<int>();
             head->store(0);
-            tail = new std::atomic<int>();
             tail->store(0);
         }
     }
@@ -94,103 +92,12 @@ private:
     T * data;
 };
 
-/*
-RingMmapQueue::RingMmapQueue(const char* path, size_t size) 
-    : mfile_(boost::interprocess::open_or_create, path, size),
-      buffer_(static_cast<char*>(mfile_.get_address())),
-      capacity_(mfile_.get_size()) {}
-
-size_t RingMmapQueue::next_pos(size_t pos) const {
-    return (pos + 1) % capacity_;
-}
-
-bool RingMmapQueue::push(const Tick& tick) {
-    std::string serialized;
-    serialize(tick, serialized);
-    uint32_t data_size = serialized.size();
-    size_t total_size = sizeof(data_size) + data_size;
-
-    // Check space (with ring wrap)
-    size_t curr_head = head_.load(std::memory_order_relaxed);
-    size_t curr_tail = tail_.load(std::memory_order_acquire);
-
-    if (next_pos(curr_head) == curr_tail || 
-        (curr_head < curr_tail && curr_head + total_size >= curr_tail)) {
-        return false; // Queue full
-    }
-
-    // Handle wrap-around
-    if (curr_head + total_size > capacity_) {
-        // Write partial at end, remainder at start
-        size_t first_chunk = capacity_ - curr_head;
-        if (first_chunk >= sizeof(data_size)) {
-            std::memcpy(buffer_ + curr_head, &data_size, sizeof(data_size));
-            std::memcpy(buffer_, serialized.data(), data_size);
-        } else {
-            // Split serialized data across boundary
-            std::memcpy(buffer_ + curr_head, &data_size, first_chunk);
-            std::memcpy(buffer_, reinterpret_cast<char*>(&data_size) + first_chunk, 
-                       sizeof(data_size) - first_chunk);
-            std::memcpy(buffer_ + (sizeof(data_size) - first_chunk), 
-                       serialized.data(), data_size);
-        }
-    } else {
-        // Contiguous write
-        std::memcpy(buffer_ + curr_head, &data_size, sizeof(data_size));
-        std::memcpy(buffer_ + curr_head + sizeof(data_size), 
-                   serialized.data(), data_size);
-    }
-
-    // Update head
-    head_.store((curr_head + total_size) % capacity_, std::memory_order_release);
-    return true;
-}
-
-bool RingMmapQueue::pop(Tick& tick) {
-    size_t curr_tail = tail_.load(std::memory_order_relaxed);
-    if (curr_tail == head_.load(std::memory_order_acquire)) 
-        return false; // Queue empty
-
-    // Read size (handle wrap-around)
-    uint32_t data_size;
-    if (curr_tail + sizeof(data_size) > capacity_) {
-        size_t first_chunk = capacity_ - curr_tail;
-        std::memcpy(&data_size, buffer_ + curr_tail, first_chunk);
-        std::memcpy(reinterpret_cast<char*>(&data_size) + first_chunk,
-                   buffer_, sizeof(data_size) - first_chunk);
-    } else {
-        std::memcpy(&data_size, buffer_ + curr_tail, sizeof(data_size));
-    }
-
-    // Calculate read positions
-    size_t data_start = (curr_tail + sizeof(data_size)) % capacity_;
-    size_t total_size = sizeof(data_size) + data_size;
-
-    // Read data (handle wrap-around)
-    std::vector<char> buf(data_size);
-    if (data_start + data_size > capacity_) {
-        size_t first_chunk = capacity_ - data_start;
-        std::memcpy(buf.data(), buffer_ + data_start, first_chunk);
-        std::memcpy(buf.data() + first_chunk, buffer_, data_size - first_chunk);
-    } else {
-        std::memcpy(buf.data(), buffer_ + data_start, data_size);
-    }
-
-    // Deserialize
-    deserialize(buf.data(), tick);
-
-    // Update tail
-    tail_.store((curr_tail + total_size) % capacity_, std::memory_order_release);
-    return true;
-}
-*/
-
-
 // consume raw data
 class MMapQueueV2
 {
 public:
-    MMapQueueV2(std::string && path, size_t size)
+    MMapQueueV2() = default;
+    MMapQueueV2(std::string path, size_t size)
         : fileTotalSize(size + 2 * 64)
         , capacity(size)
     {
@@ -222,27 +129,30 @@ public:
         if (!fileExisted)
         {
             // Initialize header
-            head = new std::atomic<size_t>();
             head->store(0);
-            tail = new std::atomic<size_t>();
+            // Initialize tail
             tail->store(0);
         }
+
+        std::cout << "create mmap" << head->load() << " " << tail->load() << std::endl;
     }
 
     ~MMapQueueV2()
     {
+        std::cout << "release mmap" << head->load() << " " << tail->load() << std::endl;
         munmap(data, fileTotalSize);
         close(fd_);
     }
 
     bool push(const std::string & rawTicker)
     {
-        int dataSize = rawTicker.size();
-        auto totalSize = sizeof(dataSize) + dataSize;
-        auto headValue = head->load(std::memory_order_relaxed);
-        auto tailValue = tail->load(std::memory_order_acquire);
-
-        if ((headValue + totalSize) % capacity >= tailValue)
+        size_t dataSize = rawTicker.size();
+        size_t totalSize = sizeof(dataSize) + dataSize;
+        size_t headValue = head->load(std::memory_order_relaxed);
+        size_t tailValue = tail->load(std::memory_order_acquire);
+        //std::cout << "push:" << tailValue << " " << headValue << " " << rawTicker << " " << rawTicker.size() << std::endl;
+        if ((headValue < tailValue && headValue + totalSize >= tailValue)
+            || (headValue > tailValue && headValue + totalSize >= capacity + tailValue))
             return false; // Queue full
 
 
@@ -252,14 +162,17 @@ public:
             size_t firstChunkSize = capacity - headValue;
             if (firstChunkSize >= sizeof(dataSize)) [[likely]]
             {
+                //std::cout << "path 1" << std::endl;
                 std::memcpy(data + headValue, &dataSize, sizeof(dataSize));
 
                 firstChunkSize = firstChunkSize - sizeof(dataSize);
+
                 std::memcpy(data + headValue + sizeof(dataSize), rawTicker.data(), firstChunkSize);
                 std::memcpy(data, rawTicker.data() + firstChunkSize, dataSize - firstChunkSize);
             }
             else [[unlikely]]
             {
+                //std::cout << "path 2" << std::endl;
                 // Split serialized data across boundary
                 std::memcpy(data + headValue, &dataSize, firstChunkSize);
                 std::memcpy(data, reinterpret_cast<char *>(&dataSize) + firstChunkSize, sizeof(dataSize) - firstChunkSize);
@@ -269,6 +182,7 @@ public:
         else [[likely]]
         {
             // Contiguous write
+            //std::cout << "path 3" << std::endl;
             std::memcpy(data + headValue, &dataSize, sizeof(dataSize));
             std::memcpy(data + headValue + sizeof(dataSize), rawTicker.data(), dataSize);
         }
@@ -280,22 +194,23 @@ public:
 
     bool pop(std::string & rawTicker)
     {
-        auto tailValue = tail->load(std::memory_order_relaxed);
-        auto headValue = head->load(std::memory_order_acquire);
-
-        //std::cout << tailValue << " " << headValue << std::endl;
+        size_t tailValue = tail->load(std::memory_order_relaxed);
+        size_t headValue = head->load(std::memory_order_acquire);
+        //std::cout << "pop start: " << tailValue << " " << headValue << " " << std::endl;
         if (tailValue == headValue)
             return false; // Queue empty
 
         size_t dataSize;
         if (tailValue + sizeof(dataSize) > capacity) [[unlikely]]
         {
+            //std::cout << "path 4" << std::endl;
             size_t firstChunkSize = capacity - tailValue;
             std::memcpy(&dataSize, data + tailValue, firstChunkSize);
             std::memcpy(reinterpret_cast<char *>(&dataSize) + firstChunkSize, data, sizeof(dataSize) - firstChunkSize);
         }
         else [[likely]]
         {
+            //std::cout << "path 5" << std::endl;
             std::memcpy(&dataSize, data + tailValue, sizeof(dataSize));
         }
 
@@ -307,15 +222,18 @@ public:
         rawTicker = std::string(dataSize, 0);
         if (dataStart + dataSize > capacity)
         {
+            //std::cout << "path 6" << std::endl;
             size_t firstChunkSize = capacity - dataStart;
             std::memcpy(rawTicker.data(), data + dataStart, firstChunkSize);
             std::memcpy(rawTicker.data() + firstChunkSize, data, dataSize - firstChunkSize);
         }
         else [[likely]]
         {
+            //std::cout << "path 7" << std::endl;
             std::memcpy(rawTicker.data(), data + dataStart, dataSize);
         }
 
+        //std::cout << "pop: " << tailValue << " " << headValue << " " << rawTicker << " " << rawTicker.size() << std::endl;
         tail->store((tailValue + totalSize) % capacity, std::memory_order_release);
         return true;
     }
@@ -325,8 +243,8 @@ private:
 
     int fd_;
     size_t fileTotalSize;
-    std::atomic<size_t> * head; // read position
-    std::atomic<size_t> * tail; // write position
+    std::atomic<size_t> * head = nullptr; // read position
+    std::atomic<size_t> * tail = nullptr; // write position
     char * data;
     size_t capacity;
 };

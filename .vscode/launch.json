@@ -1,0 +1,28 @@
+{
+    // Use IntelliSense to learn about possible attributes.
+    // Hover to view descriptions of existing attributes.
+    // For more information, visit: https://go.microsoft.com/fwlink/?linkid=830387
+    "version": "0.2.0",
+    "configurations": [
+        {
+            "type": "cppdbg",
+            "request": "launch",
+            "name": "Launch Program",
+            "program": "${workspaceFolder}/build/bin/${input:executableName}",
+            "cwd": "${workspaceFolder}",
+            "stopAtEntry": false,
+            "environment": [],
+            "externalConsole": false,
+            "preLaunchTask": "build",
+            "MIMode": "gdb",
+            "miDebuggerPath": "/usr/bin/gdb"
+        }
+    ],
+    "inputs": [
+        {
+            "type": "promptString",
+            "id": "executableName",
+            "description": "Enter the name of the executable to debug (e.g., crypto_trading_run or crypto_trading_test)"
+        }
+    ]
+}
