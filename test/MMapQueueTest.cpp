@@ -91,18 +91,12 @@ TEST(mmapQueue, test2)
 
     for (int i = 0; i < 100; ++i)
     {
-        std::cout << ve[i] << std::endl;
-        while (!mpQueue.push(ve[i]))
-        {
-        }
+        mpQueue.push(ve[i]);
     }
 
     for (int i = 0; i < 100; ++i)
     {
-        std::string str;
-        while (!mpQueue.pop(str))
-        {
-        }
+        std::string str = mpQueue.pop();
 
         GTEST_ASSERT_EQ(str, ve[i]);
     }
@@ -112,7 +106,7 @@ TEST(mmapQueue, test2)
 TEST(mmapQueue, test3)
 {
     auto dataSize = 10000000;
-    constexpr size_t mmapSize = 1024 * 1024;
+    constexpr size_t mmapSize = 1024 * 1024 * 10;
     std::string fileName = "./mmapQueue3.txt";
     auto ve = std::vector<std::string>();
     for (int i = 0; i < dataSize; ++i)
@@ -126,9 +120,7 @@ TEST(mmapQueue, test3)
         MMapQueueV2 mpQueue(fileName, mmapSize);
         for (int i = 0; i < dataSize; ++i)
         {
-            while (!mpQueue.push(ve[i]))
-            {
-            }
+            mpQueue.push(ve[i]);
         }
         return;
     }
@@ -139,10 +131,7 @@ TEST(mmapQueue, test3)
         MMapQueueV2 mpQueue(fileName, mmapSize);
         for (int i = 0; i < dataSize; ++i)
         {
-            std::string data;
-            while (!mpQueue.pop(data))
-            {
-            }
+            auto data = mpQueue.pop();
 
             GTEST_ASSERT_EQ(data, ve[i]);
         }

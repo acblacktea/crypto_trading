@@ -3,13 +3,13 @@
 #include <atomic>
 #include <cstring>
 #include <filesystem>
+#include <iostream>
 #include <stdexcept>
 #include <string>
 #include <vector>
 #include <fcntl.h>
 #include <unistd.h>
 #include <sys/mman.h>
-
 // ring queue
 template <typename T, size_t N>
 class MMapQueue
@@ -97,7 +97,7 @@ class MMapQueueV2
 {
 public:
     MMapQueueV2() = default;
-    MMapQueueV2(std::string path, size_t size)
+    MMapQueueV2(std::string & path, size_t size)
         : fileTotalSize(size + 2 * 64)
         , capacity(size)
     {
@@ -144,7 +144,7 @@ public:
         close(fd_);
     }
 
-    bool push(const std::string & rawTicker)
+    bool tryPush(const std::string & rawTicker)
     {
         size_t dataSize = rawTicker.size();
         size_t totalSize = sizeof(dataSize) + dataSize;
@@ -192,7 +192,7 @@ public:
         return true;
     }
 
-    bool pop(std::string & rawTicker)
+    bool tryPop(std::string & rawTicker)
     {
         size_t tailValue = tail->load(std::memory_order_relaxed);
         size_t headValue = head->load(std::memory_order_acquire);
@@ -236,6 +236,23 @@ public:
         //std::cout << "pop: " << tailValue << " " << headValue << " " << rawTicker << " " << rawTicker.size() << std::endl;
         tail->store((tailValue + totalSize) % capacity, std::memory_order_release);
         return true;
+    }
+
+    void push(std::string & value)
+    {
+        while (!tryPush(value))
+        {
+        }
+    }
+
+    std::string pop()
+    {
+        std::string value;
+        while (!tryPop(value))
+        {
+        }
+
+        return value;
     }
 
 private:

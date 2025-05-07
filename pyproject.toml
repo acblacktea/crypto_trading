@@ -1,12 +1,13 @@
 [tool.poetry]
-name = "tickerjob"
+name = "crypto-trading"
 version = "0.1.0"
 description = ""
-authors = ["Your Name <you@example.com>"]
+authors = ["acblacktea <acblacktea@outlook.com>"]
 readme = "README.md"
 
 [tool.poetry.dependencies]
 python = "^3.12"
+pybind11 = "^2.13.6"
 
 
 [build-system]

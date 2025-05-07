@@ -23,15 +23,10 @@ public:
 
     void listen()
     {
+        // c++ mmap queue
         auto mpQueue = MMapQueueV2(_mmapFile, _mmapSize);
-        BinanceStreamClient.subscrible(
-            {"btcusdt@depth@100ms"},
-            [this, &mpQueue](std::string & s)
-            {
-                while (!mpQueue.push(s))
-                {
-                }
-            });
+
+        BinanceStreamClient.subscrible({"btcusdt@depth@100ms"}, [this, &mpQueue](std::string & s) { mpQueue.push(s); });
 
         BinanceStreamClient.listen();
     }

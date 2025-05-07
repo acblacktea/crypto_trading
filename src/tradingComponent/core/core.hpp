@@ -26,9 +26,7 @@ public:
         std::string s;
         while (true)
         {
-            while (!mpQueue.pop(s))
-            {
-            }
+            std::string s = mpQueue.pop();
 
             rapidjson::Document document;
             document.Parse(s.c_str());

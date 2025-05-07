@@ -6,8 +6,8 @@
 
 int main()
 {
-    std::string cppMMapQueueName = "event_queue_cpp";
-    std::size_t cppMMapQueueSize = 100000;
+    std::string cppMMapQueueName = "./data/mmap/event_queue_cpp";
+    constexpr size_t cppMMapQueueSize = 1024 * 1024 * 1024;
 
     // receive ticker data
     auto process1PID = fork();
