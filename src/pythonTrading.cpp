@@ -9,8 +9,9 @@ int main()
     std::string pythonMMapQueueName = "./data/mmap/event_queue_python";
     constexpr std::size_t pythonMMapQueueSize = 1024 * 1024 * 1024;
 
-
+    /*
     Gateway gateway(pythonMMapQueueName, pythonMMapQueueSize);
     gateway.listen();
+    */
     return 0;
 }

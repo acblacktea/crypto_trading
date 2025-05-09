@@ -5,9 +5,10 @@ run_cpp_trading:
 	./build/src/crypto_trading_cpp_trading
 run_python_trading:
 	./build/src/crypto_trading_python_trading
-run_collect_data_cron_job_receiver:
-	./build/src/crypto_trading_ticker_collect_receiver
 
-run_collect_data_cron_job_consumer:
+run_ticker_cpp:
+	./build/src/crypto_trading_ticker
+
+run_ticker_python:
 	python ./python/tickerJob/main.py
 	

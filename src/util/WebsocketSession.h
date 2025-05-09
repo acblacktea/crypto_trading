@@ -114,11 +114,6 @@ public:
         auto dataStr = boost::beast::buffers_to_string(buffer_.data());
         rawDataFunc(dataStr);
 
-        /*
-        rapidjson::Document document;
-        document.Parse(dataStr.c_str());
-        func(document);
-        */
 
         buffer_.consume(buffer_.size());
         ws.async_read(buffer_, beast::bind_front_handler(&Session::onRead, shared_from_this()));

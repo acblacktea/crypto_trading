@@ -3,6 +3,7 @@
 #include <iostream>
 #include <random>
 #include <string>
+#include <thread>
 #include <vector>
 #include <unistd.h>
 #include <exchanges/binance/http/Client.h>
@@ -12,28 +13,73 @@
 #include <sys/wait.h>
 #include <util/MMapQueue.hpp>
 
+class BinanceProperty
+{
+public:
+    std::vector<std::string> spotEventTypes;
+    std::string spotEventMMapQueueName;
+    size_t spotEventMMapQueueSize;
+
+    std::vector<std::string> USDMEventTypes;
+    std::string USDMEventMMapQueueName;
+    size_t USDMEventMMapQueueSize;
+};
+
+class GatewayProperty
+{
+public:
+    BinanceProperty binanceProperty;
+};
+
 class Gateway
 {
 public:
-    Gateway(std::string & mmapFile, size_t mmapSize)
+    Gateway(GatewayProperty & properties)
+        : properties_(properties)
     {
-        _mmapFile = mmapFile;
-        _mmapSize = mmapSize;
     }
 
     void listen()
     {
-        // c++ mmap queue
-        auto mpQueue = MMapQueueV2(_mmapFile, _mmapSize);
+        std::vector<std::thread> threads;
+        if (!properties_.binanceProperty.spotEventTypes.empty())
+        {
+            threads.emplace_back(
+                std::thread(
+                    [this]
+                    {
+                        std::cout << "spot: " << std::endl;
+                        Binance::Websocket::SpotClient client;
+                        auto mpQueue = MMapQueueV2(
+                            properties_.binanceProperty.spotEventMMapQueueName, properties_.binanceProperty.spotEventMMapQueueSize);
+                        client.subscrible(
+                            properties_.binanceProperty.spotEventTypes, [this, &mpQueue](std::string & s) { mpQueue.push(s); });
+                        client.listen();
+                    }));
+        };
 
-        BinanceStreamClient.subscrible({"btcusdt@depth@100ms"}, [this, &mpQueue](std::string & s) { mpQueue.push(s); });
+        if (!properties_.binanceProperty.USDMEventTypes.empty())
+        {
+            threads.emplace_back(
+                std::thread(
+                    [this]
+                    {
+                        std::cout << "future: " << std::endl;
+                        Binance::Websocket::USDMClient client;
+                        auto mpQueue = MMapQueueV2(
+                            properties_.binanceProperty.USDMEventMMapQueueName, properties_.binanceProperty.USDMEventMMapQueueSize);
+                        client.subscrible(
+                            properties_.binanceProperty.USDMEventTypes, [this, &mpQueue](std::string & s) { mpQueue.push(s); });
+                        client.listen();
+                    }));
+        };
 
-        BinanceStreamClient.listen();
+        for (auto & thread : threads)
+        {
+            thread.join();
+        }
     }
 
 private:
-    Binance::Websocket::Client BinanceStreamClient;
-    Binance::Http::Client BinanceHttpClient;
-    std::string _mmapFile;
-    size_t _mmapSize;
+    GatewayProperty properties_;
 };
