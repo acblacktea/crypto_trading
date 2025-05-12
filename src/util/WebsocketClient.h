@@ -6,6 +6,8 @@
 #include <string>
 #include <utility>
 #include <boost/asio.hpp>
+#include <boost/asio/connect.hpp>
+#include <boost/asio/ip/tcp.hpp>
 #include <boost/asio/ssl.hpp>
 #include <boost/asio/strand.hpp>
 #include <boost/beast.hpp>
@@ -54,5 +56,33 @@ protected:
     net::io_context ioc;
     std::string path; // "/stream?streams=";
     std::string host;
+};
+
+class OrderClient
+{
+public:
+    OrderClient(const std::string & host, const std::string & port)
+        : resolver_(ioc_)
+        , ws_(ioc_)
+    {
+        // Connect to server
+        auto const results = resolver_.resolve(host, port);
+        net::connect(ws_.next_layer(), results.begin(), results.end());
+        ws_.handshake(host, "/");
+    }
+
+    std::string sendOrder(const std::string & message)
+    {
+        // Send message
+        ws_.write(net::buffer(message));
+
+        // Read response
+        beast::flat_buffer buffer;
+        ws_.read(buffer);
+    }
+
+    net::io_context ioc_;
+    tcp::resolver resolver_;
+    websocket::stream<tcp::socket> ws_;
 };
 }

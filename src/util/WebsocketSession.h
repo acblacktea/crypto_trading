@@ -41,14 +41,14 @@ public:
     {
     }
 
-    void run(std::string p, rawDataCallBackFunc f)
+    inline void run(std::string p, rawDataCallBackFunc f)
     {
         this->path = std::move(p);
         this->rawDataFunc = f;
         resolver_.async_resolve(host, port, beast::bind_front_handler(&Session::onResolve, shared_from_this()));
     }
 
-    void onResolve(beast::error_code ec, const tcp::resolver::results_type & results)
+    inline void onResolve(beast::error_code ec, const tcp::resolver::results_type & results)
     {
         if (ec)
         {
@@ -64,7 +64,7 @@ public:
         beast::get_lowest_layer(ws).async_connect(results, beast::bind_front_handler(&Session::onConnect, shared_from_this()));
     }
 
-    void onConnect(beast::error_code ec, const tcp::resolver::results_type::endpoint_type & ep)
+    inline void onConnect(beast::error_code ec, const tcp::resolver::results_type::endpoint_type & ep)
     {
         if (ec)
         {
@@ -74,7 +74,7 @@ public:
         ws.next_layer().async_handshake(ssl::stream_base::client, beast::bind_front_handler(&Session::onSSLHandshake, shared_from_this()));
     }
 
-    void onSSLHandshake(beast::error_code ec)
+    inline void onSSLHandshake(beast::error_code ec)
     {
         if (ec)
         {
@@ -91,7 +91,7 @@ public:
         ws.async_handshake(host + ":" + port, path, beast::bind_front_handler(&Session::onHandshake, shared_from_this()));
     }
 
-    void onHandshake(beast::error_code ec)
+    inline void onHandshake(beast::error_code ec)
     {
         if (ec)
         {
@@ -101,7 +101,7 @@ public:
         ws.async_read(buffer_, beast::bind_front_handler(&Session::onRead, shared_from_this()));
     }
 
-    void onRead(beast::error_code ec, std::size_t bytes_transferred)
+    inline void onRead(beast::error_code ec, std::size_t bytes_transferred)
     {
         boost::ignore_unused(bytes_transferred);
 
