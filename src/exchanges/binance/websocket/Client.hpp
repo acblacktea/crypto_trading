@@ -31,11 +31,11 @@ public:
     }
 
 
-    std::string openOrder() { }
+    std::string openOrder() { return ""; }
 
-    std::string modifyOrder() { }
+    std::string modifyOrder() { return ""; }
 
-    std::string cancelOrder() { }
+    std::string cancelOrder() { return ""; }
 };
 
 class COINMClient : public util::Websocket::Client

@@ -1,12 +1,4 @@
 #pragma once
-#include <exchanges/binance/model/CancelOrderRequest.h>
-#include <exchanges/binance/model/CancelOrderResponse.h>
-#include <exchanges/binance/model/NewOrderRequest.h>
-#include <exchanges/binance/model/NewOrderResponse.h>
-#include <exchanges/binance/model/QueryOrderRequest.h>
-#include <exchanges/binance/model/QueryOrderResponse.h>
-#include <exchanges/binance/model/TestNewOrderRequest.h>
-#include <exchanges/binance/model/TestNewOrderResponse.h>
 #include <util/HTTPClient.h>
 
 #include <utility>
@@ -32,11 +24,6 @@ public:
                {"Content-Type", "application/x-www-form-urlencoded"},
                {"X-MBX-APIKEY", this->apiKey}};
     }
-
-    std::tuple<NewOrderResponse, beast::error_code> newOrder(const NewOrderRequest & req);
-    std::tuple<TestNewOrderResponse, beast::error_code> testNewOrder(const TestNewOrderRequest & req);
-    std::tuple<CancelOrderResponse, beast::error_code> cancelOrder(const CancelOrderRequest & req);
-    std::tuple<QueryOrderResponse, beast::error_code> queryOrder(const QueryOrderRequest & req);
 
 private:
     std::string apiKey;

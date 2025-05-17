@@ -89,7 +89,7 @@ int main()
                 rapidjson::Document d;
                 d.Parse(s.c_str());
 
-                std::string stream = d["stream"].GetString();
+                const std::string stream = d["stream"].GetString();
                 long long startTime = d["data"]["k"]["t"].GetInt64() / 60000;
                 if (streamLatestTimeMap.contains(stream) && streamLatestTimeMap[stream] != startTime)
                 {
