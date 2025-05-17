@@ -38,19 +38,6 @@ public:
     std::string cancelOrder() { }
 };
 
-/*
-OrderClient(const std::string & host, const std::string & port)
-        : resolver_(ioc_)
-        , ws_(ioc_)
-    {
-        // Connect to server
-        auto const results = resolver_.resolve(host, port);
-        net::connect(ws_.next_layer(), results.begin(), results.end());
-        ws_.handshake(host, "/");
-    }
-*/
-
-
 class COINMClient : public util::Websocket::Client
 {
 public:
