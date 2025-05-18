@@ -1,6 +1,6 @@
 #pragma once
 #include <vector>
-#include <exchanges/binance/model/Event.hpp>
+#include <model/binance/Event.hpp>
 #include <rapidjson/document.h>
 #include <util/jsonBase.h>
 

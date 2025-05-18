@@ -1,5 +1,5 @@
-#include <exchanges/binance/model/BookTicker.h>
 #include <gtest/gtest.h>
+#include <model/binance/BookTicker.h>
 #include <rapidjson/document.h>
 
 TEST(bookTickerEvent, testDeserialize)

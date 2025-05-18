@@ -1,6 +1,5 @@
 #pragma once
 #include <optional>
-#include <exchanges/binance/model/Event.hpp>
 #include <rapidjson/document.h>
 #include <util/jsonBase.h>
 namespace Binance

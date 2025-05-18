@@ -7,8 +7,8 @@
 #include <vector>
 #include <unistd.h>
 #include <exchanges/binance/http/Client.h>
-#include <exchanges/binance/model/AggregateTrade.h>
 #include <exchanges/binance/websocket/Client.hpp>
+#include <model/binance/AggregateTrade.h>
 #include <rapidjson/document.h>
 #include <sys/wait.h>
 #include <util/MMapQueue.hpp>

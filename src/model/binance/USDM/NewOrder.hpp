@@ -1,6 +1,5 @@
 #pragma once
 #include <optional>
-#include <exchanges/binance/model/Event.hpp>
 #include <rapidjson/document.h>
 #include <util/jsonBase.h>
 namespace Binance
@@ -10,9 +9,9 @@ namespace USDM
 
 DEFINE_CLASS(
     NewOrderRequestParams,
-    ((std::string, apiKey, apiKey))((std::string, signature, signature))((std::string, symbol, symbol))((std::string, type, type))(
-        (long long, timestamp, timestamp))((std::optional<std::string>, positionSide, positionSide))(
-        (std::optional<std::string>, timeInForce, timeInForce))((std::optional<double>, quantity, quantity))(
+    ((std::string, apiKey, apiKey))((std::string, signature, signature))((std::string, symbol, symbol))((std::string, side, side))(
+        (std::string, type, type))((long long, timestamp, timestamp))((std::optional<std::string>, positionSide, positionSide))(
+        (std::optional<std::string>, timeInForce, timeInForce))((std::optional<std::string>, quantity, quantity))(
         (std::optional<std::string>, reduceOnly, reduceOnly))((std::optional<std::string>, price, price))(
         (std::optional<std::string>, stopPrice, stopPrice))((std::optional<std::string>, closePosition, closePosition))(
         (std::optional<std::string>, activationPrice, activationPrice))((std::optional<std::string>, callbackRate, callbackRate))(

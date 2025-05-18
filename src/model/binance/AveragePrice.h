@@ -1,8 +1,7 @@
 #pragma once
-#include <exchanges/binance/model/Event.hpp>
+#include <model/binance/Event.hpp>
 #include <rapidjson/document.h>
 #include <util/jsonBase.h>
-
 namespace Binance
 {
 class AveragePriceEvent : public JsonObject, public Event

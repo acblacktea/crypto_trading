@@ -1,5 +1,5 @@
-#include <exchanges/binance/model/KLine.hpp>
 #include <gtest/gtest.h>
+#include <model/binance/KLine.hpp>
 #include <rapidjson/document.h>
 
 

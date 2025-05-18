@@ -1,10 +1,12 @@
-#include <exchanges/binance/model/MiniStatisticsTicker.hpp>
-#include <rapidjson/document.h>
 #include <gtest/gtest.h>
+#include <model/binance/MiniStatisticsTicker.hpp>
+#include <rapidjson/document.h>
 
-TEST(miniTickerEventEvent, testDeserialize) {
+TEST(miniTickerEventEvent, testDeserialize)
+{
     Binance::MiniStatisticsTickerEvent event;
-    const char* json = R"({"stream":"btcusdt@miniTicker","data":{"e":"24hrMiniTicker","E":1733565885001,"s":"BTCUSDT","c":"99590.35000000","o":"97806.47000000","h":"101898.99000000","l":"97512.26000000","v":"33633.76740000","q":"3353672921.91293460"}})";
+    const char * json
+        = R"({"stream":"btcusdt@miniTicker","data":{"e":"24hrMiniTicker","E":1733565885001,"s":"BTCUSDT","c":"99590.35000000","o":"97806.47000000","h":"101898.99000000","l":"97512.26000000","v":"33633.76740000","q":"3353672921.91293460"}})";
     rapidjson::Document d;
     d.Parse(json);
     auto flag = event.deserialize(d);
@@ -21,8 +23,9 @@ TEST(miniTickerEventEvent, testDeserialize) {
     EXPECT_EQ(event.miniTicker.quoteAssetVolume, "3353672921.91293460");
 }
 
-TEST(allMiniTickersEventEvent, testDeserialize) {
-    const char* json = R"({
+TEST(allMiniTickersEventEvent, testDeserialize)
+{
+    const char * json = R"({
   "stream": "!miniTicker@arr",
   "data": [
     {

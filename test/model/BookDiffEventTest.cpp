@@ -1,10 +1,11 @@
-#include <exchanges/binance/model/BookDiff.h>
-#include <rapidjson/document.h>
 #include <gtest/gtest.h>
+#include <model/binance/BookDiff.h>
+#include <rapidjson/document.h>
 
-TEST(DiffBookDepthTest, testDeserialize) {
+TEST(DiffBookDepthTest, testDeserialize)
+{
     Binance::BookDiffEvent event;
-    const char* json = R"({
+    const char * json = R"({
   "stream": "btcusdt@depth",
   "data": {
     "e": "depthUpdate",

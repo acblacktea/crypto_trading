@@ -1,5 +1,5 @@
-#include <exchanges/binance/model/AggregateTrade.h>
 #include <gtest/gtest.h>
+#include <model/binance/AggregateTrade.h>
 #include <rapidjson/document.h>
 
 TEST(aggregateTradeEvent, testDeserialize)

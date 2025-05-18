@@ -1,6 +1,6 @@
 #pragma once
 #include <vector>
-#include <exchanges/binance/model/Event.hpp>
+#include <model/binance/Event.hpp>
 #include <rapidjson/document.h>
 #include <util/jsonBase.h>
 
@@ -62,6 +62,10 @@ bool MiniStatisticsTicker::deserialize(const rapidjson::Value & obj)
     doc.AddMember("is_student", false, allocator);
 
     rapidjson::Document doc2(rapidjson::kObjectType);
+    rapidjson::Value value1;
+
+
+    const char * s = "aaa";
     doc.AddMember("aaa", doc2, allocator);
 
     //setQuoteAssetVolume(obj.HasMember() ["q"].GetDouble());

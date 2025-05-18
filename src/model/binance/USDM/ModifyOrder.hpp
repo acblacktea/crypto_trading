@@ -1,6 +1,5 @@
 #pragma once
 #include <optional>
-#include <exchanges/binance/model/Event.hpp>
 #include <rapidjson/document.h>
 #include <util/jsonBase.h>
 namespace Binance
@@ -9,9 +8,9 @@ namespace USDM
 {
 DEFINE_CLASS(
     ModifyOrderRequestParams,
-    ((std::string, apiKey, apiKey))((std::string, signature, signature))((std::string, symbol, symbol))((long long, timestamp, timestamp))(
-        (std::string, quantity, quantity))((std::string, price, price))((std::optional<std::string>, priceMatch, priceMatch))(
-        (std::optional<long long>, recvWindow, recvWindow)))
+    ((std::string, apiKey, apiKey))((std::string, signature, signature))((long long, orderId, orderId))((std::string, symbol, symbol))(
+        (long long, timestamp, timestamp))((std::string, quantity, quantity))((std::string, price, price))((std::string, side, side))(
+        (std::optional<std::string>, priceMatch, priceMatch))((std::optional<long long>, recvWindow, recvWindow)))
 
 DEFINE_CLASS(ModifyOrderRequest, ((std::string, method, method))((ModifyOrderRequestParams, params, params)))
 

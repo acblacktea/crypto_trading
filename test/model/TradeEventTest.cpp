@@ -1,10 +1,12 @@
-#include <exchanges/binance/model/Trade.hpp>
-#include <rapidjson/document.h>
 #include <gtest/gtest.h>
+#include <model/binance/Trade.hpp>
+#include <rapidjson/document.h>
 
-TEST(tradeEvent, testDeserialize) {
+TEST(tradeEvent, testDeserialize)
+{
     Binance::TradeEvent event;
-    const char* json = R"({"stream":"btcusdt@trade","data":{"e":"trade","E":1733498426037,"s":"BTCUSDT","t":4219164344,"p":"98910.32000000","q":"0.05539000","T":1733498426037,"m":true,"M":true}})";
+    const char * json
+        = R"({"stream":"btcusdt@trade","data":{"e":"trade","E":1733498426037,"s":"BTCUSDT","t":4219164344,"p":"98910.32000000","q":"0.05539000","T":1733498426037,"m":true,"M":true}})";
     rapidjson::Document d;
     d.Parse(json);
     auto flag = event.deserialize(d);

@@ -1,5 +1,5 @@
-#include <exchanges/binance/model/StatisticsTicker.hpp>
 #include <gtest/gtest.h>
+#include <model/binance/StatisticsTicker.hpp>
 #include <rapidjson/document.h>
 
 TEST(tickerEventEvent, testDeserialize)

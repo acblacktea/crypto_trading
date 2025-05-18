@@ -1,10 +1,12 @@
-#include <exchanges/binance/model/AveragePrice.h>
-#include <rapidjson/document.h>
 #include <gtest/gtest.h>
+#include <model/binance/AveragePrice.h>
+#include <rapidjson/document.h>
 
-TEST(AveragePriceEvent, testDeserialize) {
+TEST(AveragePriceEvent, testDeserialize)
+{
     Binance::AveragePriceEvent event;
-    const char* json = R"({"stream":"btcusdt@avgPrice","data":{"e":"avgPrice","E":1733575508811,"s":"BTCUSDT","i":"5m","w":"99532.35935504","T":1733575508811}})";
+    const char * json
+        = R"({"stream":"btcusdt@avgPrice","data":{"e":"avgPrice","E":1733575508811,"s":"BTCUSDT","i":"5m","w":"99532.35935504","T":1733575508811}})";
     rapidjson::Document d;
     d.Parse(json);
     auto flag = event.deserialize(d);

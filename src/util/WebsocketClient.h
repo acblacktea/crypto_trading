@@ -14,6 +14,7 @@
 #include <boost/beast/core.hpp>
 #include <boost/beast/ssl.hpp>
 #include <boost/beast/websocket.hpp>
+#include <boost/beast/websocket/ssl.hpp>
 #include <rapidjson/document.h>
 #include <util/WebsocketSession.h>
 
@@ -61,28 +62,39 @@ protected:
 class OrderClient
 {
 public:
-    OrderClient(const std::string & host, const std::string & port)
-        : resolver_(ioc_)
-        , ws_(ioc_)
+    OrderClient(const std::string && host, const std::string && path, const std::string && port)
+        : ctx_(ssl::context::tlsv12_client)
+        , resolver_(ioc_)
+        , ws_(ioc_, ctx_)
+
     {
-        // Connect to server
+        SSL_set_tlsext_host_name(ws_.next_layer().native_handle(), host.c_str());
         auto const results = resolver_.resolve(host, port);
-        net::connect(ws_.next_layer(), results.begin(), results.end());
-        ws_.handshake(host, "/");
+        net::connect(ws_.next_layer().next_layer(), results.begin(), results.end());
+
+        // 3. SSL Handshake
+        ws_.next_layer().handshake(ssl::stream_base::client);
+
+
+        ws_.handshake(host, path);
     }
 
     std::string sendOrder(const std::string & message)
     {
+        std::cout << message << std::endl;
         // Send message
         ws_.write(net::buffer(message));
 
         // Read response
         beast::flat_buffer buffer;
         ws_.read(buffer);
+        std::cout << beast::buffers_to_string(buffer.data()) << std::endl;
+        return beast::buffers_to_string(buffer.data());
     }
 
     net::io_context ioc_;
     tcp::resolver resolver_;
-    websocket::stream<tcp::socket> ws_;
+    ssl::context ctx_;
+    websocket::stream<beast::ssl_stream<tcp::socket>> ws_;
 };
 }
