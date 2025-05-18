@@ -15,12 +15,20 @@ concept hasFromJson = requires(const rapidjson::Value & jsonObj) {
     { T::fromJson(jsonObj) } -> std::same_as<T>;
 };
 
-/*
 template <typename T>
-concept optionalHasFromJson = requires(const rapidjson::Value & jsonObj) {
-    { T::value_type::fromJson(jsonObj) } -> std::same_as<T::value_type>;
+struct isOptional : std::false_type
+{
 };
-*/
+
+template <typename U>
+struct isOptional<std::optional<U>> : std::true_type
+{
+};
+
+template <typename T>
+concept optionalHasFromJson = isOptional<T>::value && requires(const rapidjson::Value & jsonObj) {
+    { T::value_type::fromJson(jsonObj) };
+};
 
 
 template <class T>
@@ -37,18 +45,12 @@ inline T getJsonValue(const rapidjson::Value & jsonObj, const char * fieldName)
 }
 
 template <class T>
-requires hasFromJson<T>
+requires optionalHasFromJson<T>
 inline T getJsonValue(const rapidjson::Value & jsonObj, const char * fieldName)
-{
-    return T::fromJson(jsonObj[fieldName]);
-}
-
-template <class T>
-inline std::optional<double> getJsonValue<std::optional<double>>(const rapidjson::Value & jsonObj, const char * fieldName)
 {
     if (jsonObj.HasMember(fieldName))
     {
-        return jsonObj[fieldName].GetDouble();
+        return T::value_type::fromJson(jsonObj);
     }
     else [[likely]]
     {
@@ -144,6 +146,12 @@ concept hasToJsonValue = requires(T & obj) {
     { obj.toJsonValue() } -> std::same_as<rapidjson::Value>;
 };
 
+template <typename T>
+concept optionalHasToJsonValue = isOptional<T>::value && requires(T & obj) {
+    { obj.toJsonValue() } -> std::same_as<rapidjson::Value>;
+};
+
+
 template <class T>
 inline void fieldToJsonValue(
     rapidjson::Value & d, rapidjson::MemoryPoolAllocator<rapidjson::CrtAllocator> & allocator, T & obj, const char * fieldName) { };
@@ -156,6 +164,20 @@ fieldToJsonValue(rapidjson::Value & d, rapidjson::MemoryPoolAllocator<rapidjson:
     rapidjson::Value key(fieldName, allocator);
 
 
+    d.AddMember(key, obj.toJsonValue(), allocator);
+}
+
+template <class T>
+requires optionalHasToJsonValue<T>
+inline void
+fieldToJsonValue(rapidjson::Value & d, rapidjson::MemoryPoolAllocator<rapidjson::CrtAllocator> & allocator, T & obj, const char * fieldName)
+{
+    if (obj == std::nullopt)
+    {
+        return;
+    }
+
+    rapidjson::Value key(fieldName, allocator);
     d.AddMember(key, obj.toJsonValue(), allocator);
 }
 

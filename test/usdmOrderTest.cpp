@@ -7,7 +7,7 @@
 #include <model/binance/Util.hpp>
 #include <util/SignatureGenerator.hpp>
 std::string apiKey = "SRlwymgh6Zisvy73B8e3V9OtllHkb2jGiS7hZKoxYkUkbAff8RwftrvtdGly5zQ6";
-std::string secretKey = "Ch80hTyFgrlAneNVoo6wr1q7NWeak9SiGzboFj3fyWH1E3cywcD0NieSWaHSuobY";
+std::string secretKey = "***";
 
 
 // 685989929304

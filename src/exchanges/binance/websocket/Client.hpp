@@ -70,7 +70,6 @@ public:
     std::string getResponseStr(rapidjson::Document & messageDocument, std::string & secretKey)
     {
         auto timestamp = generateMillisecond();
-        std::cout << timestamp << std::endl;
         rapidjson::Value IDkey("id");
         rapidjson::Value IDvalue;
         IDvalue.SetInt64(timestamp);

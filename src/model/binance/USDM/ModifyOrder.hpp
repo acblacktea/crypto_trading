@@ -27,6 +27,6 @@ DEFINE_CLASS(
         (std::string, selfTradePreventionMode, selfTradePreventionMode))((long long, goodTillDate, goodTillDate))(
         (long long, updateTime, updateTime)))
 
-DEFINE_CLASS(ModifyOrderResponse, ((long long, status, status))((ModifyOrderResponseResult, result, result)))
+DEFINE_CLASS(ModifyOrderResponse, ((long long, status, status))((std::optional<ModifyOrderResponseResult>, result, result)))
 }
 }

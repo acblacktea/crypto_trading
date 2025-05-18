@@ -35,6 +35,6 @@ DEFINE_CLASS(
         (std::string, selfTradePreventionMode, selfTradePreventionMode))((long long, goodTillDate, goodTillDate))(
         (long long, updateTime, updateTime)))
 
-DEFINE_CLASS(NewOrderResponse, ((long long, status, status))((NewOrderResponseResult, result, result)))
+DEFINE_CLASS(NewOrderResponse, ((long long, status, status))((std::optional<NewOrderResponseResult>, result, result)))
 }
 }

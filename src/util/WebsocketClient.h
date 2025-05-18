@@ -81,14 +81,14 @@ public:
 
     std::string sendOrder(const std::string & message)
     {
-        std::cout << message << std::endl;
+        //std::cout << message << std::endl;
         // Send message
         ws_.write(net::buffer(message));
 
         // Read response
         beast::flat_buffer buffer;
         ws_.read(buffer);
-        std::cout << beast::buffers_to_string(buffer.data()) << std::endl;
+        //std::cout << beast::buffers_to_string(buffer.data()) << std::endl;
         return beast::buffers_to_string(buffer.data());
     }
 

@@ -30,6 +30,6 @@ DEFINE_CLASS(
         (long long, updateTime, updateTime))((std::optional<std::string>, activatePrice, activatePrice))(
         (std::optional<std::string>, priceRate, priceRate)))
 
-DEFINE_CLASS(QueryOrderResponse, ((long long, status, status))((QueryOrderResponseResult, result, result)))
+DEFINE_CLASS(QueryOrderResponse, ((long long, status, status))((std::optional<QueryOrderResponseResult>, result, result)))
 }
 }
