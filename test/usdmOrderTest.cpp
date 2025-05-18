@@ -6,7 +6,7 @@
 #include <gtest/gtest.h>
 #include <model/binance/Util.hpp>
 #include <util/SignatureGenerator.hpp>
-std::string apiKey = "SRlwymgh6Zisvy73B8e3V9OtllHkb2jGiS7hZKoxYkUkbAff8RwftrvtdGly5zQ6";
+std::string apiKey = "&&&";
 std::string secretKey = "***";
 
 
