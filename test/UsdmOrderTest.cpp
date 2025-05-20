@@ -16,52 +16,49 @@ std::string secretKey = "***";
 */
 TEST(usdmOrderTest, newOrder)
 {
-    Binance::Websocket::OrderUSDMClient client;
+    Binance::Websocket::OrderUSDMClient client(apiKey, secretKey);
     Binance::USDM::NewOrderRequest newOrderRequest;
-    newOrderRequest.params.apiKey = apiKey;
     newOrderRequest.params.symbol = "BTCUSDT";
     newOrderRequest.params.side = Binance::BUYSIDE;
     newOrderRequest.params.price = "50000.00";
     newOrderRequest.params.type = Binance::LIMITTYPE;
     newOrderRequest.params.quantity = "0.002";
     newOrderRequest.params.timeInForce = "GTC";
-    auto newOrderResponse = client.newOrder(newOrderRequest, secretKey);
+    auto newOrderResponse = client.newOrder(newOrderRequest);
     std::cout << newOrderResponse.toJson() << std::endl;
 }
 
 TEST(usdmOrderTest, queryOrder)
 {
-    Binance::Websocket::OrderUSDMClient client;
+    Binance::Websocket::OrderUSDMClient client(apiKey, secretKey);
     Binance::USDM::QueryOrderRequest queryOrderRequest;
     queryOrderRequest.params.apiKey = apiKey;
     queryOrderRequest.params.orderId = 685989929304;
     queryOrderRequest.params.symbol = "BTCUSDT";
-    auto response = client.queryOrder(queryOrderRequest, secretKey);
+    auto response = client.queryOrder(queryOrderRequest);
     std::cout << response.toJson() << std::endl;
 }
 
 
 TEST(usdmOrderTest, modifyOrder)
 {
-    Binance::Websocket::OrderUSDMClient client;
+    Binance::Websocket::OrderUSDMClient client(apiKey, secretKey);
     Binance::USDM::ModifyOrderRequest modifyOrderRequest;
     modifyOrderRequest.params.orderId = 685989929304;
-    modifyOrderRequest.params.apiKey = apiKey;
     modifyOrderRequest.params.symbol = "BTCUSDT";
     modifyOrderRequest.params.price = "50002";
     modifyOrderRequest.params.quantity = "0.003";
     modifyOrderRequest.params.side = Binance::BUYSIDE;
-    auto response = client.modifyOrder(modifyOrderRequest, secretKey);
+    auto response = client.modifyOrder(modifyOrderRequest);
     std::cout << response.toJson() << std::endl;
 }
 
 TEST(usdmOrderTest, cancelOrder)
 {
-    Binance::Websocket::OrderUSDMClient client;
+    Binance::Websocket::OrderUSDMClient client(apiKey, secretKey);
     Binance::USDM::CancelOrderRequest cancelOrderRequest;
-    cancelOrderRequest.params.apiKey = apiKey;
     cancelOrderRequest.params.orderId = 685989929304;
     cancelOrderRequest.params.symbol = "BTCUSDT";
-    auto response = client.cancelOrder(cancelOrderRequest, secretKey);
+    auto response = client.cancelOrder(cancelOrderRequest);
     std::cout << response.toJson() << std::endl;
 }

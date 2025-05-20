@@ -1,8 +1,8 @@
 #pragma once
-#include <model/binance/USDM/CancelOrder.hpp>
-#include <model/binance/USDM/ModifyOrder.hpp>
-#include <model/binance/USDM/NewOrder.hpp>
-#include <model/binance/USDM/QueryOrder.hpp>
+#include <model/binance/usdm/CancelOrder.hpp>
+#include <model/binance/usdm/ModifyOrder.hpp>
+#include <model/binance/usdm/NewOrder.hpp>
+#include <model/binance/usdm/QueryOrder.hpp>
 #include <rapidjson/document.h>
 #include <rapidjson/prettywriter.h>
 #include <util/SignatureGenerator.hpp>
@@ -33,41 +33,43 @@ public:
 class OrderUSDMClient : public util::Websocket::OrderClient
 {
 public:
-    OrderUSDMClient()
+    OrderUSDMClient(std::string apiKey, std::string secretKey)
         : OrderClient("ws-fapi.binance.com", "/ws-fapi/v1", "443")
+        , apiKey_(apiKey)
+        , secretKey_(secretKey)
     {
     }
 
 
-    Binance::USDM::NewOrderResponse newOrder(Binance::USDM::NewOrderRequest & request, std::string & secretKey)
+    Binance::USDM::NewOrderResponse newOrder(Binance::USDM::NewOrderRequest & request)
     {
         request.method = "order.place";
         auto messageDocument = request.toJsonDocument();
-        return Binance::USDM::NewOrderResponse::fromString(getResponseStr(messageDocument, secretKey));
+        return Binance::USDM::NewOrderResponse::fromString(getResponseStr(messageDocument));
     }
 
-    Binance::USDM::ModifyOrderResponse modifyOrder(Binance::USDM::ModifyOrderRequest & request, std::string & secretKey)
+    Binance::USDM::ModifyOrderResponse modifyOrder(Binance::USDM::ModifyOrderRequest & request)
     {
         request.method = "order.modify";
         auto messageDocument = request.toJsonDocument();
-        return Binance::USDM::ModifyOrderResponse::fromString(getResponseStr(messageDocument, secretKey));
+        return Binance::USDM::ModifyOrderResponse::fromString(getResponseStr(messageDocument));
     }
 
-    Binance::USDM::CancelOrderResponse cancelOrder(Binance::USDM::CancelOrderRequest & request, std::string & secretKey)
+    Binance::USDM::CancelOrderResponse cancelOrder(Binance::USDM::CancelOrderRequest & request)
     {
         request.method = "order.cancel";
         auto messageDocument = request.toJsonDocument();
-        return Binance::USDM::CancelOrderResponse::fromString(getResponseStr(messageDocument, secretKey));
+        return Binance::USDM::CancelOrderResponse::fromString(getResponseStr(messageDocument));
     }
 
-    Binance::USDM::QueryOrderResponse queryOrder(Binance::USDM::QueryOrderRequest & request, std::string & secretKey)
+    Binance::USDM::QueryOrderResponse queryOrder(Binance::USDM::QueryOrderRequest & request)
     {
         request.method = "order.status";
         auto messageDocument = request.toJsonDocument();
-        return Binance::USDM::QueryOrderResponse::fromString(getResponseStr(messageDocument, secretKey));
+        return Binance::USDM::QueryOrderResponse::fromString(getResponseStr(messageDocument));
     }
 
-    std::string getResponseStr(rapidjson::Document & messageDocument, std::string & secretKey)
+    std::string getResponseStr(rapidjson::Document & messageDocument)
     {
         auto timestamp = generateMillisecond();
         rapidjson::Value IDkey("id");
@@ -76,7 +78,7 @@ public:
         messageDocument.AddMember(IDkey, IDvalue, messageDocument.GetAllocator());
         messageDocument["params"]["timestamp"].SetInt64(timestamp);
 
-        auto signature = generateBinanceSignatureString(secretKey, messageDocument["params"].GetObject());
+        auto signature = generateBinanceSignatureString(secretKey_, messageDocument["params"].GetObject());
         messageDocument["params"]["signature"].SetString(signature.data(), signature.size());
 
 
@@ -86,6 +88,10 @@ public:
         std::string message = buffer.GetString();
         return sendOrder(message);
     }
+
+private:
+    std::string apiKey_;
+    std::string secretKey_;
 };
 
 class COINMClient : public util::Websocket::Client

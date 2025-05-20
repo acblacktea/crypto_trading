@@ -1,6 +1,6 @@
 #include <iostream>
 #include <gtest/gtest.h>
-#include <model/binance/USDM/NewOrder.hpp>
+#include <model/binance/usdm/NewOrder.hpp>
 #include <rapidjson/document.h>
 
 TEST(createUSDMOrder, testJson)
