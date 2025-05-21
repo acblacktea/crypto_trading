@@ -37,76 +37,94 @@ concept hasFromJson = requires(const rapidjson::Value & jsonObj) {
 class Client
 {
 public:
-    Client(std::string & host)
+    Client(std::string && host)
         : host_(host)
     {
     }
 
     template <class T>
     requires hasFromJson<T>
-    T get(const std::string & path, std::string & params, const std::string & body, std::unordered_map<std::string, std::string> & headers)
+    std::tuple<T, std::string>
+    get(const std::string & path, std::string & params, const std::string && body, std::unordered_map<std::string, std::string> && headers)
     {
         net::io_context ioc;
         ssl::context ctx{ssl::context::tlsv12_client};
-        ctx.set_verify_mode(ssl::verify_peer);
-        ctx.set_default_verify_paths();
-        auto se = std::make_shared<session>(net::make_strand(ioc), ctx, host, headers);
+        auto se = std::make_shared<session>(net::make_strand(ioc), ctx, host_, headers);
         se->run(path + "?" + params, http::verb::get, body);
         ioc.run();
 
+        if (se->errorMessage.size())
+        {
+            return {T(), se->errorMessage};
+        }
+
         rapidjson::Document document;
         document.Parse(se->res.body().c_str());
-        return T::from(json);
+        return {T::fromJson(document), ""};
     }
 
     template <class T>
     requires hasFromJson<T>
-    T post(const std::string & path, std::string & params, const std::string & body, std::unordered_map<std::string, std::string> & headers)
+    std::tuple<T, std::string>
+    post(const std::string & path, std::string & params, const std::string && body, std::unordered_map<std::string, std::string> && headers)
     {
         net::io_context ioc;
 
         ssl::context ctx{ssl::context::tlsv12_client};
-        ctx.set_verify_mode(ssl::verify_peer);
         auto se = std::make_shared<session>(net::make_strand(ioc), ctx, host_, headers);
         se->run(path + "?" + params, http::verb::post, body);
         ioc.run();
 
+        if (se->errorMessage.size())
+        {
+            return {T(), se->errorMessage};
+        }
+
         rapidjson::Document document;
         document.Parse(se->res.body().c_str());
-        return T::from(json);
+        return {T::fromJson(document), ""};
     }
 
     template <class T>
     requires hasFromJson<T>
-    T put(const std::string & path, std::string & params, const std::string & body, std::unordered_map<std::string, std::string> & headers)
+    std::tuple<T, std::string>
+    put(const std::string & path, std::string & params, const std::string && body, std::unordered_map<std::string, std::string> && headers)
     {
         net::io_context ioc;
         ssl::context ctx{ssl::context::tlsv12_client};
-        ctx.set_verify_mode(ssl::verify_peer);
         auto se = std::make_shared<session>(net::make_strand(ioc), ctx, host_, headers);
         se->run(path + "?" + params, http::verb::put, body);
         ioc.run();
 
+        if (se->errorMessage.size())
+        {
+            return {T(), se->errorMessage};
+        }
+
         rapidjson::Document document;
         document.Parse(se->res.body().c_str());
-        return T::from(json);
+        return {T::fromJson(document), ""};
     }
 
     template <class T>
     requires hasFromJson<T>
-    T delete_(
-        const std::string & path, std::string & params, const std::string & body, std::unordered_map<std::string, std::string> & headers)
+    std::tuple<T, std::string> delete_(
+        const std::string & path, std::string & params, const std::string && body, std::unordered_map<std::string, std::string> && headers)
     {
         net::io_context ioc;
         ssl::context ctx{ssl::context::tlsv12_client};
-        ctx.set_verify_mode(ssl::verify_peer);
         auto se = std::make_shared<session>(net::make_strand(ioc), ctx, host_, headers);
         se->run(path + "?" + params, http::verb::delete_, body);
         ioc.run();
 
+        if (se->errorMessage.size())
+        {
+            return {T(), se->errorMessage};
+        }
+
         rapidjson::Document document;
         document.Parse(se->res.body().c_str());
-        return T::from(json);
+        return {T::fromJson(document), ""};
     }
 
 protected:

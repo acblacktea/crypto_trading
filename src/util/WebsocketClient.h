@@ -59,10 +59,10 @@ protected:
     std::string host;
 };
 
-class OrderClient
+class RequestClient
 {
 public:
-    OrderClient(const std::string && host, const std::string && path, const std::string && port)
+    RequestClient(const std::string && host, const std::string && path, const std::string && port)
         : ctx_(ssl::context::tlsv12_client)
         , resolver_(ioc_)
         , ws_(ioc_, ctx_)

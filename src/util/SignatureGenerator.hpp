@@ -9,7 +9,7 @@
 #include <openssl/sha.h>
 #include <rapidjson/document.h>
 
-std::string generateBinanceSignature(const std::string & secret_key, const std::string & query_string)
+inline std::string generateBinanceSignature(const std::string & secret_key, const std::string & query_string)
 {
     unsigned char * digest = HMAC(
         EVP_sha256(), secret_key.c_str(), secret_key.length(), (unsigned char *)query_string.c_str(), query_string.length(), NULL, NULL);
@@ -25,8 +25,7 @@ std::string generateBinanceSignature(const std::string & secret_key, const std::
     return ss.str();
 }
 
-
-std::string generateBinanceSignatureString(const std::string & secret_key, const rapidjson::Value & params)
+inline std::string generateParamsString(const rapidjson::Value & params, bool sortParams)
 {
     std::vector<std::pair<std::string, std::string>> paramPairs;
 
@@ -59,7 +58,10 @@ std::string generateBinanceSignatureString(const std::string & secret_key, const
         paramPairs.emplace_back(key, valueStr);
     }
 
-    std::sort(paramPairs.begin(), paramPairs.end(), [](const auto & a, const auto & b) { return a.first < b.first; });
+    if (sortParams)
+    {
+        std::sort(paramPairs.begin(), paramPairs.end(), [](const auto & a, const auto & b) { return a.first < b.first; });
+    }
 
     std::string queryString;
     bool first = true;
@@ -74,5 +76,11 @@ std::string generateBinanceSignatureString(const std::string & secret_key, const
         queryString += key + "=" + value;
     }
 
-    return generateBinanceSignature(secret_key, queryString);
+    return queryString;
+}
+
+
+inline std::string generateBinanceSignatureString(const std::string & secretKey, rapidjson::Value & params, bool sortParams)
+{
+    return generateBinanceSignature(secretKey, generateParamsString(params, sortParams));
 }

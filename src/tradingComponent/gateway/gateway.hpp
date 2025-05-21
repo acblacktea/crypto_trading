@@ -6,7 +6,7 @@
 #include <thread>
 #include <vector>
 #include <unistd.h>
-#include <exchanges/binance/http/Client.h>
+#include <exchanges/binance/http/Client.hpp>
 #include <exchanges/binance/websocket/Client.hpp>
 #include <model/binance/AggregateTrade.h>
 #include <rapidjson/document.h>
@@ -49,7 +49,7 @@ public:
                     [this]
                     {
                         std::cout << "spot: " << std::endl;
-                        Binance::Websocket::SpotClient client;
+                        Binance::Spot::SpotClient client;
                         auto mpQueue = MMapQueueV2(
                             properties_.binanceProperty.spotEventMMapQueueName, properties_.binanceProperty.spotEventMMapQueueSize);
                         client.subscrible(
@@ -65,7 +65,7 @@ public:
                     [this]
                     {
                         std::cout << "future: " << std::endl;
-                        Binance::Websocket::USDMClient client;
+                        Binance::USDM::MarketDataClient client;
                         auto mpQueue = MMapQueueV2(
                             properties_.binanceProperty.USDMEventMMapQueueName, properties_.binanceProperty.USDMEventMMapQueueSize);
                         client.subscrible(

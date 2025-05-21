@@ -1,5 +1,8 @@
 build:
-	/usr/bin/cmake --build ./build --config Debug --target all -j 2 --
+	/usr/bin/cmake --build ./build --config release --target all -j 2 --
+
+debug:
+	/usr/bin/cmake --build ./build --config debug --target all -j 2 --
 
 run_cpp_trading:
 	./build/src/crypto_trading_cpp_trading

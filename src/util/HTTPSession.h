@@ -37,11 +37,22 @@ public:
         , stream(ex, ctx)
         , headers(headers)
     {
+        ctx.set_default_verify_paths();
+        ctx.set_verify_mode(ssl::verify_peer);
+        stream.set_verify_callback(ssl::host_name_verification(host.data()));
     }
 
     // Start the asynchronous operation
     void run(std::string_view target, http::verb method, std::string_view body)
     {
+        // Set SNI Hostname (many hosts need this to handshake successfully)
+        if (!SSL_set_tlsext_host_name(stream.native_handle(), host.data()))
+        {
+            beast::error_code ec{static_cast<int>(::ERR_get_error()), net::error::get_ssl_category()};
+            std::cerr << ec.message() << "\n";
+            return;
+        }
+
         // Set up an HTTP GET request message
         req.version(version);
         req.method(method);
@@ -64,15 +75,8 @@ public:
         if (ec)
         {
             errorCode = ec;
+            errorMessage = ec.message();
             return fail(ec, "resolve");
-        }
-
-        // Set SNI Hostname (many hosts need this to handshake successfully)
-        if (!SSL_set_tlsext_host_name(stream.native_handle(), host.data()))
-        {
-            beast::error_code ec{static_cast<int>(::ERR_get_error()), net::error::get_ssl_category()};
-            std::cerr << ec.message() << "\n";
-            return;
         }
 
 
@@ -88,6 +92,7 @@ public:
         if (ec)
         {
             errorCode = ec;
+            errorMessage = ec.message();
             return fail(ec, "connect");
         }
 
@@ -98,8 +103,11 @@ public:
     void onHandshake(beast::error_code ec)
     {
         if (ec)
+        {
             errorCode = ec;
-        return fail(ec, "handshake");
+            errorMessage = ec.message();
+            return fail(ec, "handshake");
+        }
 
         // Set a timeout on the operation
         beast::get_lowest_layer(stream).expires_after(std::chrono::seconds(30));
@@ -114,6 +122,7 @@ public:
         if (ec)
         {
             errorCode = ec;
+            errorMessage = ec.message();
             return fail(ec, "write");
         }
 
@@ -128,19 +137,29 @@ public:
         if (ec)
         {
             errorCode = ec;
+            errorMessage = ec.message();
             return fail(ec, "read");
         }
 
         std::cout << res.body() << std::endl;
         beast::get_lowest_layer(stream).expires_after(std::chrono::seconds(30));
+
+        stream.async_shutdown(beast::bind_front_handler(&session::onShutdown, shared_from_this()));
+    }
+
+    void onShutdown(beast::error_code ec)
+    {
+        if (ec != net::ssl::error::stream_truncated)
+            return fail(ec, "shutdown");
     }
 
     http::response<http::string_body> res;
     beast::error_code errorCode;
+    std::string errorMessage;
 
 private:
     tcp::resolver resolver;
-    beast::ssl_stream<beast::tcp_stream> stream;
+    ssl::stream<beast::tcp_stream> stream;
     beast::flat_buffer buffer; // (Must persist between reads)
     http::request<http::empty_body> req;
 

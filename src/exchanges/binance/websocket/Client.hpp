@@ -1,14 +1,14 @@
 #pragma once
-#include <model/binance/usdm/CancelOrder.hpp>
-#include <model/binance/usdm/ModifyOrder.hpp>
-#include <model/binance/usdm/NewOrder.hpp>
-#include <model/binance/usdm/QueryOrder.hpp>
+#include <model/binance/Usdm.hpp>
 #include <rapidjson/document.h>
 #include <rapidjson/prettywriter.h>
 #include <util/SignatureGenerator.hpp>
 #include <util/TimestampGenerator.hpp>
 #include <util/WebsocketClient.h>
-namespace Binance::Websocket
+
+namespace Binance
+{
+namespace Spot
 {
 class SpotClient : public util::Websocket::Client
 {
@@ -19,22 +19,25 @@ public:
         path = "/stream?streams=";
     }
 };
+}
 
-class USDMClient : public util::Websocket::Client
+namespace USDM
+{
+class MarketDataClient : public util::Websocket::Client
 {
 public:
-    USDMClient()
+    MarketDataClient()
     {
         host = "fstream.binance.com";
         path = "/stream?streams=";
     }
 };
 
-class OrderUSDMClient : public util::Websocket::OrderClient
+class OrderClient : public util::Websocket::RequestClient
 {
 public:
-    OrderUSDMClient(std::string apiKey, std::string secretKey)
-        : OrderClient("ws-fapi.binance.com", "/ws-fapi/v1", "443")
+    OrderClient(std::string apiKey, std::string secretKey)
+        : RequestClient("ws-fapi.binance.com", "/ws-fapi/v1", "443")
         , apiKey_(apiKey)
         , secretKey_(secretKey)
     {
@@ -45,31 +48,31 @@ public:
     {
         request.method = "order.place";
         auto messageDocument = request.toJsonDocument();
-        return Binance::USDM::NewOrderResponse::fromString(getResponseStr(messageDocument));
+        return Binance::USDM::NewOrderResponse::fromString(getRequestStr(messageDocument));
     }
 
     Binance::USDM::ModifyOrderResponse modifyOrder(Binance::USDM::ModifyOrderRequest & request)
     {
         request.method = "order.modify";
         auto messageDocument = request.toJsonDocument();
-        return Binance::USDM::ModifyOrderResponse::fromString(getResponseStr(messageDocument));
+        return Binance::USDM::ModifyOrderResponse::fromString(getRequestStr(messageDocument));
     }
 
     Binance::USDM::CancelOrderResponse cancelOrder(Binance::USDM::CancelOrderRequest & request)
     {
         request.method = "order.cancel";
         auto messageDocument = request.toJsonDocument();
-        return Binance::USDM::CancelOrderResponse::fromString(getResponseStr(messageDocument));
+        return Binance::USDM::CancelOrderResponse::fromString(getRequestStr(messageDocument));
     }
 
     Binance::USDM::QueryOrderResponse queryOrder(Binance::USDM::QueryOrderRequest & request)
     {
         request.method = "order.status";
         auto messageDocument = request.toJsonDocument();
-        return Binance::USDM::QueryOrderResponse::fromString(getResponseStr(messageDocument));
+        return Binance::USDM::QueryOrderResponse::fromString(getRequestStr(messageDocument));
     }
 
-    std::string getResponseStr(rapidjson::Document & messageDocument)
+    std::string getRequestStr(rapidjson::Document & messageDocument)
     {
         auto timestamp = generateMillisecond();
         rapidjson::Value IDkey("id");
@@ -78,7 +81,7 @@ public:
         messageDocument.AddMember(IDkey, IDvalue, messageDocument.GetAllocator());
         messageDocument["params"]["timestamp"].SetInt64(timestamp);
 
-        auto signature = generateBinanceSignatureString(secretKey_, messageDocument["params"].GetObject());
+        auto signature = generateBinanceSignatureString(secretKey_, messageDocument["params"].GetObject(), true);
         messageDocument["params"]["signature"].SetString(signature.data(), signature.size());
 
 
@@ -93,7 +96,10 @@ private:
     std::string apiKey_;
     std::string secretKey_;
 };
+}
 
+namespace CoinM
+{
 class COINMClient : public util::Websocket::Client
 {
 public:
@@ -103,4 +109,5 @@ public:
         path = "/stream?streams=";
     }
 };
+}
 }

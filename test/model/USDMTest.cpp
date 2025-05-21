@@ -1,9 +1,9 @@
 #include <iostream>
 #include <gtest/gtest.h>
-#include <model/binance/usdm/NewOrder.hpp>
+#include <model/binance/Usdm.hpp>
 #include <rapidjson/document.h>
 
-TEST(createUSDMOrder, testJson)
+TEST(USDMTest, createUSDMOrder)
 {
     const char * json = R"({
     "method": "order.place",
