@@ -1,0 +1,12 @@
+[
+    {
+        "name": "strategy_demo4",
+        "file_name": "strategy/strategy_demo4.cpp",
+        "queue_name": "queue_name4",
+        "ticker": [
+            {
+                "USDM": "klink@BTCUSDT"
+            }
+        ]
+    }
+]

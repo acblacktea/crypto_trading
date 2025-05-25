@@ -4,6 +4,8 @@ project(crypto_trading LANGUAGES CXX)
 set(CMAKE_CXX_STANDARD 23)
 
 include_directories(libs/rapidjson/include)
+include_directories(libs/unordered_dense/include)
+include_directories(libs/flatbuffer/include)
 include_directories(src)
 
 add_subdirectory(libs/googletest)

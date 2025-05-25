@@ -1,3 +1,5 @@
+tkinter
 pybind11
 backtrader
 python-binance
+matplotlib

@@ -8,6 +8,9 @@ readme = "README.md"
 [tool.poetry.dependencies]
 python = "^3.12"
 pybind11 = "^2.13.6"
+backtrader = "^1.9.78.123"
+python-binance = "^1.0.29"
+matplotlib = "^3.2.1"
 
 
 [build-system]

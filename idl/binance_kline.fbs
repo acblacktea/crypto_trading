@@ -1,0 +1,15 @@
+namespace binance;
+
+table Kline {
+    event_type: string;
+    asset_type: string;
+    symbol: string;
+    open_price: double;
+    close_price: double;
+    high_price: double;
+    low_price: double;
+    base_asset_volume: double;
+    quote_asset_volume: double;
+}
+
+root_type Kline;

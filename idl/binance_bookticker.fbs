@@ -1,0 +1,13 @@
+namespace binance;
+
+table BookTicker {
+    event_type: string;
+    asset_type: string;
+    symbol: string;
+    best_bid_price: double;
+    best_bid_quantity: double;
+    best_ask_price: double;
+    best_ask_quantity: double;
+}
+
+root_type BookTicker;

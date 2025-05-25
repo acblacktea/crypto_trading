@@ -55,7 +55,7 @@ public:
         close(fd_);
     }
 
-    bool push(const T & item)
+    [[nodiscard]] bool push(const T & item)
     {
         auto headValue = head->load(std::memory_order_relaxed);
         auto tailValue = tail->load(std::memory_order_acquire);
@@ -68,7 +68,7 @@ public:
         return true;
     }
 
-    bool pop(T & item)
+    [[nodiscard]] bool pop(T & item)
     {
         auto tailValue = tail->load(std::memory_order_relaxed);
         auto headValue = head->load(std::memory_order_acquire);

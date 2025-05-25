@@ -4,13 +4,16 @@
             "name": "linux",
             "includePath": [
                 "${workspaceFolder}/src",
+                "${workspaceFolder}/strategy",
                 "${workspaceFolder}/libs/googletest/googletest/include",
-                "${workspaceFolder}/libs/rapidjson/include"
+                "${workspaceFolder}/libs/rapidjson/include",
+                "${workspaceFolder}/libs/unordered_dense/include",
+                "${workspaceFolder}/libs/flatbuffer/include"
             ],
             "defines": [],
             "cStandard": "c17",
             "cppStandard": "c++23",
-            "intelliSenseMode": "macos-clang-x64"
+            "intelliSenseMode": "linux-gcc-x64"
         }
     ],
     "version": 4

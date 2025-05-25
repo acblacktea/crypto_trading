@@ -5,8 +5,7 @@
 
 namespace Binance
 {
-
-DEFINE_CLASS(
+[[deprecated]] DEFINE_CLASS(
     KLine,
     ((long long, startTime, t))((long long, closeTime, T))((std::string, symbol, s))((std::string, interval, i))(
         (long long, firstTradeID, f))((long long, lastTradeID, L))((std::string, openPrice, o))((std::string, closePrice, c))(
@@ -14,6 +13,7 @@ DEFINE_CLASS(
         (bool, isKLineClosed, x))((std::string, quoteAssetVolume, q))((std::string, takerBuyAssetVolume, V))(
         (std::string, takerBuyQuoteVolume, Q)))
 
-DEFINE_CLASS(KLineData, ((std::string, eventType, e))((long long, eventTime, E))((std::string, symbol, s))((KLine, kLine, k)))
-DEFINE_CLASS(KLineEvent, ((std::string, stream, stream))((KLineData, data, data)))
+    [[deprecated]] DEFINE_CLASS(
+        KLineData, ((std::string, eventType, e))((long long, eventTime, E))((std::string, symbol, s))((KLine, kLine, k)))
+        [[deprecated]] DEFINE_CLASS(KLineEvent, ((std::string, stream, stream))((KLineData, data, data)))
 }

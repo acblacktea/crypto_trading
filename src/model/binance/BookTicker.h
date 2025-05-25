@@ -7,10 +7,10 @@
 namespace Binance
 {
 
-DEFINE_CLASS(
+[[deprecated]] DEFINE_CLASS(
     BookTicker,
     ((std::string, symbol, s))((std::string, bestBidPrice, b))((std::string, bestBidQuantity, B))((std::string, bestAskPrice, a))(
         (std::string, bestAskQuantity, A))((long long, updateTime, u)))
 
-DEFINE_CLASS(BookTickerEvent, ((std::string, stream, stream))((BookTicker, data, data)))
+    [[deprecated]] DEFINE_CLASS(BookTickerEvent, ((std::string, stream, stream))((BookTicker, data, data)))
 }

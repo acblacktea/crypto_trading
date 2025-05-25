@@ -1,9 +1,15 @@
+[submodule "lib/unordered_dense"]
+	path = lib/unordered_dense
+	url = git@github.com:martinus/unordered_dense.git
 [submodule "libs/googletest"]
 	path = libs/googletest
 	url = https://github.com/google/googletest
 [submodule "libs/rapidjson"]
 	path = libs/rapidjson
 	url = git@github.com:Tencent/rapidjson.git
-[submodule "libs/boost"]
-	path = libs/boost
-	url = git@github.com:boostorg/boost.git
+[submodule "libs/seastar"]
+	path = libs/seastar
+	url = https://github.com/scylladb/seastar.git
+[submodule "libs/flatbuffer"]
+	path = libs/flatbuffer
+	url = git@github.com:google/flatbuffers.git

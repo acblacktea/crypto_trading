@@ -4,7 +4,7 @@
 #include <util/jsonBase.h>
 namespace Binance
 {
-class AveragePriceEvent : public JsonObject, public Event
+[[deprecated]] class AveragePriceEvent : public JsonObject, public Event
 {
 public:
     bool deserialize(const rapidjson::Value & obj) override;

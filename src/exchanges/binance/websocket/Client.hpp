@@ -1,5 +1,7 @@
 #pragma once
 #include <model/binance/Usdm.hpp>
+#include <model/gen/binance/binance_bookticker_generated.h>
+#include <model/gen/binance/binance_kline_generated.h>
 #include <rapidjson/document.h>
 #include <rapidjson/prettywriter.h>
 #include <util/SignatureGenerator.hpp>
