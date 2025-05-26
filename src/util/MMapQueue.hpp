@@ -144,9 +144,8 @@ public:
         close(fd_);
     }
 
-    bool tryPush(const std::string & rawTicker)
+    bool tryPush(const char * rawTicker, size_t dataSize)
     {
-        size_t dataSize = rawTicker.size();
         size_t totalSize = sizeof(dataSize) + dataSize;
         size_t headValue = head->load(std::memory_order_relaxed);
         size_t tailValue = tail->load(std::memory_order_acquire);
@@ -167,8 +166,8 @@ public:
 
                 firstChunkSize = firstChunkSize - sizeof(dataSize);
 
-                std::memcpy(data + headValue + sizeof(dataSize), rawTicker.data(), firstChunkSize);
-                std::memcpy(data, rawTicker.data() + firstChunkSize, dataSize - firstChunkSize);
+                std::memcpy(data + headValue + sizeof(dataSize), rawTicker, firstChunkSize);
+                std::memcpy(data, rawTicker + firstChunkSize, dataSize - firstChunkSize);
             }
             else [[unlikely]]
             {
@@ -176,7 +175,7 @@ public:
                 // Split serialized data across boundary
                 std::memcpy(data + headValue, &dataSize, firstChunkSize);
                 std::memcpy(data, reinterpret_cast<char *>(&dataSize) + firstChunkSize, sizeof(dataSize) - firstChunkSize);
-                std::memcpy(data + (sizeof(dataSize) - firstChunkSize), rawTicker.data(), dataSize);
+                std::memcpy(data + (sizeof(dataSize) - firstChunkSize), rawTicker, dataSize);
             }
         }
         else [[likely]]
@@ -184,7 +183,7 @@ public:
             // Contiguous write
             //std::cout << "path 3" << std::endl;
             std::memcpy(data + headValue, &dataSize, sizeof(dataSize));
-            std::memcpy(data + headValue + sizeof(dataSize), rawTicker.data(), dataSize);
+            std::memcpy(data + headValue + sizeof(dataSize), rawTicker, dataSize);
         }
 
 
@@ -238,9 +237,9 @@ public:
         return true;
     }
 
-    void push(std::string & value)
+    void push(const char * rawTicker, size_t dataSize)
     {
-        while (!tryPush(value))
+        while (!tryPush(rawTicker, dataSize))
         {
         }
     }

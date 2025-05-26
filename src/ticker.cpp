@@ -27,7 +27,7 @@ int main()
     auto process1PID = fork();
     if (process1PID == 0)
     {
-        GatewayProperty properties;
+        Gateway::GatewayProperty properties;
         properties.binanceProperty.spotEventMMapQueueName = "./data/mmap/binance_spot_ticker";
         properties.binanceProperty.spotEventMMapQueueSize = 1024 * 1024 * 1024;
         properties.binanceProperty.spotEventTypes = {
@@ -54,7 +54,7 @@ int main()
             "solusdt@bookTicker",
         };
 
-        Gateway gateway(properties);
+        Gateway::Gateway gateway(properties);
         gateway.listen();
     }
 

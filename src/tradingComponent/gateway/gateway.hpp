@@ -11,7 +11,17 @@
 #include <model/binance/AggregateTrade.h>
 #include <rapidjson/document.h>
 #include <sys/wait.h>
+#include <tradingComponent/gateway/convertTicker.hpp>
 #include <util/MMapQueue.hpp>
+
+
+/*
+ rapidjson::Document jsonObj;
+jsonObj.Parse(str.data());
+*/
+
+namespace Gateway
+{
 
 class BinanceProperty
 {
@@ -83,3 +93,4 @@ public:
 private:
     GatewayProperty properties_;
 };
+}

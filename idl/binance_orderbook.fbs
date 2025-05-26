@@ -1,0 +1,18 @@
+namespace binance;
+
+
+struct PriceLevel {
+    price: ulong;
+    quantity: ulong;
+}
+
+table OrderBook {
+    event_type: string;
+    asset_type: string;
+    symbol: string;
+    update_id: ulong;
+    bids: [PriceLevel];
+    asks: [PriceLevel];
+}
+
+root_type OrderBook;
