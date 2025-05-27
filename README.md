@@ -14,7 +14,7 @@ strategy (cpp/python) - produce alpha signal.
 
 ## how to optimize
 1. lock free queue to transmit ticker, improve throuput.
-2. use mmap to do IPC, pure memory and reduce user & kernel space swith count.
+2. use mmap to do IPC, pure memory and zero copy.
 3. cache friendly optimization, through memory alignment, struct of array array of struct, increase cache hit rate, reduce false sharing at same time.
 4. use seastar library to implement websocket, can easily integrate DPDK to make network package by pass kernel.
 5. use websocket api rather http api.
