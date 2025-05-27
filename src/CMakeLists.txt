@@ -1,7 +1,7 @@
 set(BINARY ${CMAKE_PROJECT_NAME})
 
-file(GLOB_RECURSE SOURCES CONFIGURE_DEPENDS "*.h" ".hpp" "cpp")
-list(FILTER SOURCES EXCLUDE REGEX "cppTrading.cpp|pythonTrading.cpp|ticker.cpp")
+file(GLOB_RECURSE SOURCES CONFIGURE_DEPENDS "*.h" "*.hpp" "*.cpp")
+list(FILTER SOURCES EXCLUDE REGEX "cppTrading.cpp|pythonTrading.cpp|ticker.cpp|TradingSystem.cpp")
 
 set(Boost_USE_STATIC_LIBS ON)
 find_package(Boost REQUIRED system random thread)
@@ -22,12 +22,10 @@ pybind11_add_module(trading pyInterface/mmapQueue.cpp)
 install(TARGETS trading DESTINATION liuyang)
 
 add_library(${BINARY}_lib STATIC ${SOURCES})
-add_executable(${BINARY}_cpp_trading ${SOURCES} cppTrading.cpp)
-add_executable(${BINARY}_python_trading ${SOURCES} pythonTrading.cpp)
+add_executable(${BINARY}_cpp_trading ${SOURCES} TradingSystem.cpp)
 add_executable(${BINARY}_ticker ${SOURCES} ticker.cpp)
 
 target_link_libraries(${BINARY}_cpp_trading PRIVATE ${Boost_LIBRARIES} ${OPENSSL_LIBRARIES})
-target_link_libraries(${BINARY}_python_trading PRIVATE ${Boost_LIBRARIES} ${OPENSSL_LIBRARIES})
 target_link_libraries(${BINARY}_ticker PRIVATE ${Boost_LIBRARIES} ${OPENSSL_LIBRARIES})
 
 target_link_libraries(${BINARY}_lib PRIVATE ${Boost_LIBRARIES} ${OPENSSL_LIBRARIES})

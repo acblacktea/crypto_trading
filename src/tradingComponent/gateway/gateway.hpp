@@ -23,9 +23,49 @@ jsonObj.Parse(str.data());
 namespace Gateway
 {
 
+/*
+       {
+        "name": "strategy_demo1",
+        "file_name": "strategy/strategy_demo1.cpp",
+        "ticker": [
+            {
+                "assetType": "USDM",
+                "type": "klink@BTCUSDT"
+            }
+        ]
+    },
+*/
+
 class BinanceProperty
 {
 public:
+    BinanceProperty(std::string_view configStr)
+    {
+        spotEventMMapQueueName = "spot_event_queue";
+        spotEventMMapQueueSize = 1024 * 1024 * 1024;
+
+        USDMEventMMapQueueName = "usdm_event_queue";
+        USDMEventMMapQueueSize = 1024 * 1024 * 1024;
+
+        rapidjson::Document jsonObj;
+        jsonObj.Parse(configStr.data());
+        for (int i = 0; i < jsonObj.Size(); ++i)
+        {
+            for (int j = 0; j < jsonObj[i]["ticker"].Size(); ++j)
+            {
+                auto & value = jsonObj[i]["ticker"][j];
+                if (value["assetType"] == "spot")
+                {
+                    spotEventTypes.emplace_back(value["type"].GetString());
+                }
+                else if (value["assetType"] == "USDM")
+                {
+                    USDMEventTypes.emplace_back(value["type"].GetString());
+                }
+            }
+        }
+    }
+
     std::vector<std::string> spotEventTypes;
     std::string spotEventMMapQueueName;
     size_t spotEventMMapQueueSize;
@@ -44,8 +84,8 @@ public:
 class Gateway
 {
 public:
-    Gateway(GatewayProperty & properties)
-        : properties_(properties)
+    Gateway(std::string_view configStr)
+        : properties_(configStr)
     {
     }
 
@@ -63,7 +103,14 @@ public:
                         auto mpQueue = MMapQueueV2(
                             properties_.binanceProperty.spotEventMMapQueueName, properties_.binanceProperty.spotEventMMapQueueSize);
                         client.subscrible(
-                            properties_.binanceProperty.spotEventTypes, [this, &mpQueue](std::string & s) { mpQueue.push(s); });
+                            properties_.binanceProperty.spotEventTypes,
+                            [this, &mpQueue](std::string & s)
+                            {
+                                rapidjson::Document jsonObj;
+                                jsonObj.Parse(s.data());
+                                auto buffer = convertBinanceTicker(jsonObj, "Spot");
+                                mpQueue.push(reinterpret_cast<char *>(buffer.GetBufferPointer()), buffer.GetSize());
+                            });
                         client.listen();
                     }));
         };
@@ -79,7 +126,14 @@ public:
                         auto mpQueue = MMapQueueV2(
                             properties_.binanceProperty.USDMEventMMapQueueName, properties_.binanceProperty.USDMEventMMapQueueSize);
                         client.subscrible(
-                            properties_.binanceProperty.USDMEventTypes, [this, &mpQueue](std::string & s) { mpQueue.push(s); });
+                            properties_.binanceProperty.USDMEventTypes,
+                            [this, &mpQueue](std::string & s)
+                            {
+                                rapidjson::Document jsonObj;
+                                jsonObj.Parse(s.data());
+                                auto buffer = convertBinanceTicker(jsonObj, "Future");
+                                mpQueue.push(reinterpret_cast<char *>(buffer.GetBufferPointer()), buffer.GetSize());
+                            });
                         client.listen();
                     }));
         };

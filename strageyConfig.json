@@ -1,11 +1,21 @@
 [
     {
-        "name": "strategy_demo4",
-        "file_name": "strategy/strategy_demo4.cpp",
-        "queue_name": "queue_name4",
+        "name": "strategy_demo1",
+        "file_name": "strategy/strategy_demo1.cpp",
         "ticker": [
             {
-                "USDM": "klink@BTCUSDT"
+                "assetType": "USDM",
+                "type": "klink@BTCUSDT"
+            }
+        ]
+    },
+    {
+        "name": "strategy_demo2",
+        "file_name": "strategy/strategy_demo2.cpp",
+        "ticker": [
+            {
+                "assetType": "USDM",
+                "type": "BTCUSDT@depth"
             }
         ]
     }

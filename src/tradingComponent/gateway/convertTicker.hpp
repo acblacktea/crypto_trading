@@ -28,7 +28,26 @@ inline long long getLongValue(rapidjson::Document & document, const char * field
     return value;
 }
 
-inline flatbuffers::Offset<binance::BookTicker> jsonToBinaceBookTickerBuilder(rapidjson::Document & document, std::string_view asset)
+inline flatbuffers::FlatBufferBuilder convertBinanceTicker(rapidjson::Document & document, std::string_view asset)
+{
+    std::string eventType = document["e"].GetString();
+    if (eventType.contains("@depth"))
+    {
+        return jsonToBinanceOrderbook(document, asset);
+    }
+
+    if (eventType.contains("bookTicker"))
+    {
+        return jsonToBinaceBookTickerBuilder(document, asset);
+    }
+
+    if (eventType.contains("@depth"))
+    {
+        return jsonToBinanceOrderbook(document, asset);
+    }
+}
+
+inline flatbuffers::FlatBufferBuilder jsonToBinaceBookTickerBuilder(rapidjson::Document & document, std::string_view asset)
 {
     flatbuffers::FlatBufferBuilder builder;
 
@@ -47,10 +66,10 @@ inline flatbuffers::Offset<binance::BookTicker> jsonToBinaceBookTickerBuilder(ra
         getDoubleValue(document, "A"));
 
     builder.Finish(bookticker);
-    return bookticker;
+    return builder;
 }
 
-inline flatbuffers::Offset<binance::Kline> jsonToBinaceKline(rapidjson::Document & document, std::string_view asset)
+inline flatbuffers::FlatBufferBuilder jsonToBinaceKline(rapidjson::Document & document, std::string_view asset)
 {
     flatbuffers::FlatBufferBuilder builder;
 
@@ -71,10 +90,10 @@ inline flatbuffers::Offset<binance::Kline> jsonToBinaceKline(rapidjson::Document
         getDoubleValue(document, "q"));
 
     builder.Finish(klineTicker);
-    return klineTicker;
+    return builder;
 }
 
-inline flatbuffers::Offset<binance::OrderBook> jsonToBinanceOrderbook(rapidjson::Document & document, std::string_view asset)
+inline flatbuffers::FlatBufferBuilder jsonToBinanceOrderbook(rapidjson::Document & document, std::string_view asset)
 {
     flatbuffers::FlatBufferBuilder builder;
 
@@ -103,7 +122,7 @@ inline flatbuffers::Offset<binance::OrderBook> jsonToBinanceOrderbook(rapidjson:
     auto orderbookTicker = binance::CreateOrderBook(builder, eventType, assetType, symbol, getLongValue(document, "u"), bids, asks);
 
     builder.Finish(orderbookTicker);
-    return orderbookTicker;
+    return builder;
 }
 
 }
