@@ -2,15 +2,15 @@
 
 ## Introduction
 
-This is my side project cpp trading system for trading crypto with cpp & python, currently only support binance trading spot, margin, future, T2O latency estimately 2ms now.
+This is my side project cpp trading system for trading crypto with cpp & python, currently only support binance trading spot, margin, future, T2O latency estimately 2 μs now.
 Now I am tring improve a bit more and will finish it first version until end of June, then start spend time learning strategies.
 
 ## Arch
 ![alt text](./img/image.png)
 
-gatway - receive ticker data from exchange
-core - get ticker data and maintain orderbook and other financial data structure and indicator (like kline, bbo, total quantity from buy/sell side)
-strategy (cpp/python) - produce alpha signal.
+#### gatway - receive ticker data from exchange
+#### core - get ticker data and maintain orderbook and other financial data structure and indicator (like kline, bbo, total quantity from buy/sell side)
+#### strategy (cpp/python) - produce alpha signal.
 
 ## how to optimize
 1. lock free queue to transmit ticker, improve throuput.
